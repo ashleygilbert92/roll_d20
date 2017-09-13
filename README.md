@@ -24,7 +24,7 @@ a)	Website: Will likely host it on Heroku or AWS. Both have lots of resources fo
 
 
 
-Project Checkpoints:
+## Project Checkpoints:
 
 October 4th - Server, domain, basic flask app with file structure, mysql database setup with expected tables, create basic template for expected pages
 
