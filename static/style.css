@@ -15,3 +15,7 @@
 #footer li:first-child{
     border-left: none;
 }
+
+body {
+    font-family: Amarante;
+}
