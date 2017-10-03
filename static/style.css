@@ -1,0 +1,17 @@
+#footer{
+    clear: left;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    font-size: 11px;
+}
+
+#footer li{
+    display: inline;
+    border-left: solid 1px black;
+    padding: 0 10px;
+}
+
+#footer li:first-child{
+    border-left: none;
+}
