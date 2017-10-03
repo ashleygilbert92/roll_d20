@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Roll D20</title>
-</head>
-<body>
-
-</body>
-</html>
+<html>
+{% block head %}
+  <head>
+      <title>Roll D20</title>
+      <link rel="stylesheet" type="text/css" href="../static/style.css">
+{#      <link href="../static/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />#}
+      <link href="https://fonts.googleapis.com/css?family=Amarante" rel="stylesheet">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  </head>
+{% endblock %}
+{% block body %}
+    <body>
+    <div id="header"></div>
+    <div id="nav"></div>
+    {% block content %}
+        <h1 style='color:#392212'>Welcome to Roll D20</h1>
+    {% endblock %}
+    {% block footer %}
+        <div id="footer">
+            <hr>
+            <li>@2017 Ashley Gilbert</li>
+	    	<li><a href="/">Home</a></li>
+	    	<li><a href="/">D20 Probability</a></li>
+	    	<li><a href="/">Login</a></li>
+        </div>
+    {% endblock %}
+    </body>
+{% endblock %}
