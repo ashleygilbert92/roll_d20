@@ -1,4 +1,5 @@
 # Pathfinder RPG Tool using Python Flask
+# https://roll-d20.com/
 
 
 ## Part1:
@@ -34,3 +35,6 @@ November 8th - Play session page previous session/encounter view, session notes 
 
 November 27th - Figure out grid map overlay and display/download, figure out how to pull data for notifications, EXP calculation page 
 
+
+## Checkpoint 1:
+Oct 4th: I created my server, domain, basic flask app, mysql database with tables setup, and creted templates (currently don't have any content). https://roll-d20.com/
