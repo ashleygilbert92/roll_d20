@@ -24,7 +24,11 @@ body {
     font-family: Amarante !important;
 }
 
-#login_button #logout_button{
+#login_button{
+    min-width: 100px !important;
+}
+
+#logout_button{
     min-width: 100px !important;
 }
 
