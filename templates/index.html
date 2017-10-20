@@ -2,27 +2,71 @@
 {% block head %}
   <head>
       <title>Roll D20</title>
-      <link rel="stylesheet" type="text/css" href="../static/style.css">
+      <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+      <link rel="stylesheet" href="/static/css/bootstrap.css"/>
+      <link rel="stylesheet" href="/static/css/bootstrap-grid.css"/>
+      <link rel="stylesheet" href="/static/css/bootstrap-reboot.css"/>
       <link href="../static/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
       <link href="https://fonts.googleapis.com/css?family=Amarante" rel="stylesheet">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   </head>
 {% endblock %}
 {% block body %}
-    <body>
-    <div id="header"></div>
-    <div id="nav"></div>
+    <body style="background-color: #C8D3D5;">
+    <div id="header">
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #5B5B5B;">
+      <a class="navbar-brand nav" href="/">Roll D20</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/play_sessions/">Play Sessions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/exp_calculator/">EXP Calculator</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/probability/">D20 Probability</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/grid_overlay/">Map Grid Overlay</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/player_feedback/">Player Feedback</a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+            {% if current_user.is_authenticated %}
+                 <a role="button" class="btn btn-sm btn-success" id="logout_button" href="/logout/">Logout</a>
+            {% else %}
+                <a role="button" class="btn btn-sm btn-success" id="login_button" href="/login/">Login</a>
+            {% endif %}
+        </span>
+      </div>
+    </nav>
+    </div>
+
     {% block content %}
-        <h1 style='color:#392212'>Welcome to Roll D20</h1>
     {% endblock %}
+
     {% block footer %}
         <div id="footer">
             <hr>
-            <li>@2017 Ashley Gilbert</li>
-	    	<li><a href="/">Home</a></li>
-	    	<li><a href="/">D20 Probability</a></li>
-	    	<li><a href="/">Login</a></li>
+            <ul>
+                <li>@2017 Ashley Gilbert</li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/player_feedback/">Player Feedback</a></li>
+            </ul>
         </div>
+    {% endblock %}
+
+    {% block scripts %}
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/tether.min.js"></script>
+        <script src="/static/js/popper.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/bootstrap.bundle.min.js"></script>
     {% endblock %}
     </body>
 {% endblock %}
