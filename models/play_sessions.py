@@ -17,4 +17,7 @@ class PlaySessionModel(Base):
     campaign = relationship(CampaignModel, lazy=False, backref='play_session')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', campaign_id='{self.campaign_id}, date='{self.date}')>"
+        return "<{}(id='{}', campaign_id='{}, date='{}')>".format(self.__class__.__name__,
+                                                                  self.id,
+                                                                  self.campaign_id,
+                                                                  self.date)

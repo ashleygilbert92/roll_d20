@@ -19,5 +19,7 @@ class SessionNoteModel(Base):
     player = relationship(PlayerModel, lazy=False, backref='session_note')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', session_id='{self.session_id}, " \
-               f"player_id='{self.player_id}')>"
+        return "<{}(id='{}', session_id='{}, player_id='{}')>".format(self.__class__.__name__,
+                                                                      self.id,
+                                                                      self.session_id,
+                                                                      self.player_id)

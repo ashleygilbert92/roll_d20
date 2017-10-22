@@ -22,5 +22,7 @@ class EncounterActionModel(Base):
     player = relationship(PlayerModel, lazy=False, backref="encounter_action")
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', encounter_id='{self.encounter_id}, " \
-               f"player_id='{self.player_id}')>"
+        return "<{}(id='{}', encounter_id='{}, player_id='{}')>".format(self.__class__.__name__,
+                                                                        self.id,
+                                                                        self.encounter_id,
+                                                                        self.player_id)

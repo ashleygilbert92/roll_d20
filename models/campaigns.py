@@ -16,4 +16,7 @@ class CampaignModel(Base):
     user = relationship(UserModel, lazy=False, backref='campaign')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', name='{self.name}', user_id='{self.user_id}')>"
+        return "<{}(id='{}', name='{}', user_id='{}')>".format(self.__class__.__name__,
+                                                               self.id,
+                                                               self.name,
+                                                               self.user_id)

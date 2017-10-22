@@ -21,4 +21,7 @@ class PlayerModel(Base):
     campaign = relationship(CampaignModel, lazy=False, backref='player')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', campaign_id='{self.campaign_id}, name='{self.name}')>"
+        return "<{}(id='{}', campaign_id='{}, name='{}')>".format(self.__class__.__name__,
+                                                                  self.id,
+                                                                  self.campaign_id,
+                                                                  self.name)

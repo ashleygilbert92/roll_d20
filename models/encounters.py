@@ -17,4 +17,7 @@ class EncounterModel(Base):
     session = relationship(PlaySessionModel, lazy=False, backref='encounter')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', session_id='{self.session_id}, name='{self.name}')>"
+        return "<{}(id='{}', session_id='{}, name='{}')>".format(self.__class__.__name__,
+                                                                 self.id,
+                                                                 self.session_id,
+                                                                 self.name)

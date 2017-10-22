@@ -12,4 +12,7 @@ class UserModel(Base):
     password = Column(String(64), nullable=False)
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', name='{self.name}', username='{self.username}')>"
+        return "<{}(id='{}', name='{}', username='{}')>".format(self.__class__.__name__,
+                                                                self.id,
+                                                                self.name,
+                                                                self.username)

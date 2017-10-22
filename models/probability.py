@@ -11,4 +11,7 @@ class ProbabilityModel(Base):
     date = Column(Date, nullable=False)
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', roll='{self.roll}', date='{self.date}')>"
+        return "<{}(id='{}', roll='{}', date='{}')>".format(self.__class__.__name__,
+                                                            self.id,
+                                                            self.roll,
+                                                            self.date)

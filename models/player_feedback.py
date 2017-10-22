@@ -18,5 +18,7 @@ class PlayerFeedbackModel(Base):
     campaign = relationship(CampaignModel, lazy=False, backref='player_feedback')
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(id='{self.id}', campaign_id='{self.campaign_id}', " \
-               f"play_name='{self.player_name}')>"
+        return "<{}(id='{}', campaign_id='{}', play_name='{}')>".format(self.__class__.__name__,
+                                                                        self.id,
+                                                                        self.campaign_id,
+                                                                        self.player_name)
