@@ -6,8 +6,8 @@
       <link rel="stylesheet" href="/static/css/bootstrap.css"/>
       <link rel="stylesheet" href="/static/css/bootstrap-grid.css"/>
       <link rel="stylesheet" href="/static/css/bootstrap-reboot.css"/>
-      <link href="../static/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
-      <link href="https://fonts.googleapis.com/css?family=Amarante" rel="stylesheet">
+      <link href="/static/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+      <link href="/static/fonts/fonts.css" type="text/css" rel="stylesheet">
   </head>
 {% endblock %}
 {% block body %}
@@ -45,6 +45,13 @@
         </span>
       </div>
     </nav>
+        {% block scripts %}
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/tether.min.js"></script>
+        <script src="/static/js/popper.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
     </div>
 
     {% block content %}
@@ -61,12 +68,5 @@
         </div>
     {% endblock %}
 
-    {% block scripts %}
-        <script src="/static/js/jquery.js"></script>
-        <script src="/static/js/tether.min.js"></script>
-        <script src="/static/js/popper.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
-        <script src="/static/js/bootstrap.bundle.min.js"></script>
-    {% endblock %}
     </body>
 {% endblock %}

@@ -2,18 +2,16 @@
 {% block content %}
     <div id="content">
         <div id="login">
-            <form>
+            <form id="login_form">
                 <h2 class="text-center">Please Login</h2>
                 <div class="form-group row">
-{#                    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>#}
                     <div class="col">
-                        <input type="email" class="form-control" id="email" placeholder="Email" required>
+                        <input type="email" class="form-control" name="username" id="username" placeholder="Email" required>
                     </div>
                 </div>
                 <div class="form-group row">
-{#                    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>#}
                     <div class="col">
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                     </div>
                 </div>
                 <div class="form-group row text-center">
@@ -24,4 +22,7 @@
             </form>
         </div>
     </div>
+    {% block login_scripts %}
+        <script src="/static/js/login.js"></script>
+    {% endblock %}
 {% endblock %}
