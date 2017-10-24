@@ -38,3 +38,11 @@ November 27th - Figure out grid map overlay and display/download, figure out how
 
 ## Checkpoint 1:
 Oct 4th: I created my server, domain, basic flask app, mysql database with tables setup, and created templates (currently don't have any content). https://roll-d20.com/
+
+
+## Checkpoint 2:
+Oct 23rd: I have created a login page with session handling across the website (username: ashleymia92@gmail.com 
+passwoord: P@ssword1), I've created the dice roll/probability page, I've created the player feedback page for non 
+logged in users. I'm still working on the logged in version on the player feedback page. I also still need to create 
+the forms for the play session page and have those figured out. Will work on this more and have these tasks finished 
+by the end of the week. 

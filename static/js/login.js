@@ -1,9 +1,15 @@
 $(document).ready(function () {
     $("#login_form").submit(function (event) {
         event.preventDefault();
+        var username = $('#username').val();
+        var password = $('#password').val();
         $.ajax({
             url: '/authenticate/',
-            data: $('#login_form').serialize(),
+            data: {
+                'username': username,
+                'password': password
+            },
+
             type: 'POST',
             success: function (response) {
                 window.location.href = response["next"];

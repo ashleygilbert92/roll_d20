@@ -3,11 +3,12 @@
 }
 
 #footer{
+    color: #5B5B5B !important;
     clear: left !important;
     padding: 10px !important;
     text-align: center !important;
     position: relative !important;
-    font-size: 11px !important;
+    font-size: 15px !important;
 }
 
 #footer li{
@@ -35,4 +36,76 @@ body {
 #login{
     margin: 20px auto;
     max-width: 400px;
+    color: #5B5B5B !important;
+}
+
+#averages_card{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+#averages_card2{
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#averages_form {
+    color: #5B5B5B !important;
+    margin: 5px auto;
+    max-width: 200px;
+}
+
+#averages_form option{
+    color: #5B5B5B !important;
+}
+
+#footer a {
+    color: #6D98BA !important;
+}
+
+#content_card {
+    max-width: 97%;
+    margin: 30px auto;
+}
+
+#prob_row1{
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+#prob_row2{
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+#probability_card{
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#probability_card2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+#probability_card3{
+    min-width: 400px;
+}
+
+#probability_form{
+    color: #5B5B5B !important;
+}
+
+#probability_form option{
+    color: #5B5B5B !important;
+}
+
+#feedback_form{
+    color: #5B5B5B !important;
+}
+
+#feedback_div{
+    margin: 20px auto;
+    max-width: 800px;
 }

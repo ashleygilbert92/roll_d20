@@ -1,6 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user
 from sqlalchemy.orm import scoped_session
+import datetime
+import sys
+from itertools import product
 
 from db import get_session_factory
 import models
@@ -49,12 +52,12 @@ def login():
 
 @app.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
-    username = request.form.get('username', None)
+    username = request.values.get('username', None)
     users = session.query(models.UserModel).filter(models.UserModel.username == username).all()
     if len(users) > 1:
         return abort(400)
     user = users[0]
-    if user is not None and user.verify_password(request.form.get('password', None)):
+    if user is not None and user.verify_password(request.values.get('password', None)):
         login_user(user)
         flash('You are now logged in. Welcome back!', 'success')
         return jsonify({"next": "/"})
@@ -86,9 +89,40 @@ def exp_calculator():
 @app.route('/probability/')
 def probability():
     if current_user.is_authenticated:
-        return render_template('probability.html', current_user=current_user)
+        total_average, today_average = calculate_average()
+        return render_template('probability.html', current_user=current_user, total_average=total_average,
+                               today_average=today_average)
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/add_roll/', methods=['GET', 'POST'])
+def add_roll():
+    roll = int(request.values.get('roll', None))
+    date = datetime.datetime.now().date()
+    new_prob = models.ProbabilityModel()
+    new_prob.date = date
+    new_prob.roll = roll
+    session.add(new_prob)
+    session.commit()
+    total_average, today_average = calculate_average()
+    return jsonify({'total_average': total_average, 'today_average': today_average})
+
+
+@app.route('/calculate_probability/', methods=['GET', 'POST'])
+def calculate_probability():
+    dice = dict()
+    dice['four'] = request.values.get('4', None)
+    dice['six'] = request.values.get('6', None)
+    dice['eight'] = request.values.get('8', None)
+    dice['ten'] = request.values.get('10', None)
+    dice['twelve'] = request.values.get('12', None)
+    dice['twenty'] = request.values.get('20', None)
+    dice['one_hundred'] = request.values.get('100', None)
+    target = int(request.values.get('target', None))
+    odds = dice_probability(dice_list=dice, target=target)
+    odds = odds * 100
+    return jsonify({'probability': odds})
 
 
 @app.route('/grid_overlay/')
@@ -101,7 +135,107 @@ def grid_overlay():
 
 @app.route('/player_feedback/')
 def player_feedback():
-    return render_template('player_feedback.html', current_user=current_user)
+
+    if current_user.is_authenticated:
+        campaigns = session.query(models.CampaignModel).filter(models.CampaignModel.user_id == current_user.id).all()
+        info = dict()
+        for campaign in campaigns:
+            list_feedback = session.query(models.PlayerFeedbackModel).filter(
+                models.PlayerFeedbackModel.campaign_id == campaign.id)
+            feedback = []
+            for var in list_feedback:
+                feedback.append(var)
+            info[campaign.name] = feedback
+
+        return render_template('player_feedback.html', current_user=current_user, info=info)
+    else:
+        campaigns = session.query(models.CampaignModel).all()
+        campaign_info = dict()
+        for campaign in campaigns:
+            user = session.query(models.UserModel).get(campaign.user_id)
+            user_name = user.name
+            campaign_info[campaign.name] = user_name
+        return render_template('feedback.html', current_user=current_user, campaigns=campaign_info)
+
+
+@app.route('/submit_feedback/', methods=['GET', 'POST'])
+def submit_feedback():
+    campaign_name = request.values.get('campaign_name', None)
+    # campaign_owner = request.values.get('campaign_owner', None)
+    player_name = request.values.get('player_name', None)
+    try:
+        date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
+    except Exception as e:
+        return abort(400, message="Invalid Date")
+
+    feedback = request.values.get('feedback', None)
+    campaign = session.query(models.CampaignModel).filter(models.CampaignModel.name == campaign_name).all()
+    if len(campaign) != 1:
+        return abort(400, message="Error with finding campaign with name: {}".format(campaign_name))
+    new_feedback = models.PlayerFeedbackModel()
+    new_feedback.campaign_id = campaign[0].id
+    new_feedback.date = date
+    new_feedback.player_name = player_name
+    new_feedback.feedback = feedback
+    session.add(new_feedback)
+    session.commit()
+    return jsonify({"success": "Successfully submitted feedback"})
+
+
+def calculate_average():
+    all_probability = session.query(models.ProbabilityModel).all()
+    total_rolls = len(all_probability)
+    total_sum = 0
+    if total_rolls != 0:
+        for roll in all_probability:
+            total_sum += roll.roll
+        total_average = total_sum / total_rolls
+    else:
+        total_average = 0
+    today = datetime.datetime.now().date()
+    today_probability = session.query(models.ProbabilityModel).filter(models.ProbabilityModel.date == today).all()
+    today_total_rolls = len(today_probability)
+    today_sum = 0
+    if today_total_rolls != 0:
+        for roll in today_probability:
+            today_sum += roll.roll
+        today_average = today_sum / today_total_rolls
+    else:
+        today_average = 0
+    return total_average, today_average
+
+
+def dice_probability(dice_list, target):
+    roll_amount = 0
+    target_amount = 0
+    for key, value in dice_list.items():
+        sides = 0
+        if key == 'four':
+            sides = 4
+        if key == 'six':
+            sides = 6
+        if key == 'eight':
+            sides = 8
+        if key == 'ten':
+            sides = 10
+        if key == 'twelve':
+            sides = 12
+        if key == 'twenty':
+            sides = 20
+        if key == 'one_hundred':
+            sides = 100
+
+        dice_number = int(value)
+
+        for i in product(range(1, sides+1), repeat=dice_number):
+            this_sum = 0
+            roll_amount += 1
+            for j in i:
+                this_sum += j
+            if this_sum == target:
+                target_amount += 1
+    odds = target_amount / roll_amount
+    return odds
 
 
 if __name__ == '__main__':
