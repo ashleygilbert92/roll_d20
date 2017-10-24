@@ -109,3 +109,18 @@ body {
     margin: 20px auto;
     max-width: 800px;
 }
+
+#player_feedback{
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+#player_feedback h1{
+    text-align: center;
+    color: #5B5B5B !important;
+}
+
+#feedback_table{
+    color: white !important;
+    background-color: #704C5E !important;
+}

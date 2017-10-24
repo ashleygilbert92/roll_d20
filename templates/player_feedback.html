@@ -1,7 +1,30 @@
 {% extends 'index.html' %}
 {% block content %}
     <div id="content">
-
-    
+        <div id ="player_feedback">
+        <h1>Player Feedback</h1>
+            <table class="table" id="feedback_table">
+                <thead>
+                    <tr>
+                        <th>Play Session Date</th>
+                        <th>Player Name</th>
+                        <th>Campaign Name</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in info.items() %}
+                        {% for feedback in value %}
+                            <tr>
+                                <td>{{ feedback.date }}</td>
+                                <td>{{ feedback.player_name }}</td>
+                                <td>{{ key }}</td>
+                                <td style="max-width: 300px;">{{ feedback.feedback }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
