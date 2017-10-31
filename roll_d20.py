@@ -61,6 +61,8 @@ def authenticate():
         login_user(user)
         flash('You are now logged in. Welcome back!', 'success')
         return jsonify({"next": "/"})
+    else:
+        return abort(400)
 
 
 @app.route('/logout/')
