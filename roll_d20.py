@@ -28,14 +28,9 @@ def load_user(user_id):
         return None
 
 
-# def is_safe_url(target):
-#     ref_url = urlparse(request.host_url)
-#     test_url = urlparse(urljoin(request.host_url, target))
-#     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
 @app.route('/')
 def home():
+    #TODO create logged in home page
     if current_user.is_authenticated:
         return render_template('campaigns.html', current_user=current_user)
     else:
@@ -72,9 +67,23 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/play_sessions/')
-def play_sessions():
+@app.route('/campaigns/')
+def campaigns():
     if current_user.is_authenticated:
+        campaign_list = session.query(models.CampaignModel)\
+            .filter(models.CampaignModel.user_id == current_user.id).all()
+        return render_template('campaigns.html', current_user=current_user, campaigns=campaign_list)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/campaigns/<campaign_id>/')
+def play_sessions(campaign_id):
+    if current_user.is_authenticated:
+        campaign = session.query(models.CampaignModel).filter(models.CampaignModel.id == campaign_id).all()
+        if len(campaign) > 1 or len(campaign) <= 0 or campaign[0].user_id != current_user.id:
+            return abort(400)
+        campaign = campaign[0]
         return render_template('play_session.html', current_user=current_user)
     else:
         return redirect(url_for('login'))
@@ -139,9 +148,10 @@ def grid_overlay():
 def player_feedback():
 
     if current_user.is_authenticated:
-        campaigns = session.query(models.CampaignModel).filter(models.CampaignModel.user_id == current_user.id).all()
+        campaign_list = session.query(models.CampaignModel).\
+            filter(models.CampaignModel.user_id == current_user.id).all()
         info = dict()
-        for campaign in campaigns:
+        for campaign in campaign_list:
             list_feedback = session.query(models.PlayerFeedbackModel).filter(
                 models.PlayerFeedbackModel.campaign_id == campaign.id)
             feedback = []
@@ -151,9 +161,9 @@ def player_feedback():
 
         return render_template('player_feedback.html', current_user=current_user, info=info)
     else:
-        campaigns = session.query(models.CampaignModel).all()
+        campaign_list = session.query(models.CampaignModel).all()
         campaign_info = dict()
-        for campaign in campaigns:
+        for campaign in campaign_list:
             user = session.query(models.UserModel).get(campaign.user_id)
             user_name = user.name
             campaign_info[campaign.name] = user_name
@@ -208,8 +218,7 @@ def calculate_average():
 
 
 def dice_probability(dice_list, target):
-    roll_amount = 0
-    target_amount = 0
+    product_list = []
     for key, value in dice_list.items():
         sides = 0
         if key == 'four':
@@ -228,15 +237,23 @@ def dice_probability(dice_list, target):
             sides = 100
 
         dice_number = int(value)
+        for i in range(1, dice_number + 1):
+            add = ()
+            for j in range(1, sides+1):
+                add += (j,)
+            product_list.append(add)
 
-        for i in product(range(1, sides+1), repeat=dice_number):
-            this_sum = 0
-            roll_amount += 1
-            for j in i:
-                this_sum += j
-            if this_sum == target:
-                target_amount += 1
-    odds = target_amount / roll_amount
+    rollAmount = 0
+    targetAmount = 0
+    products = product(*product_list)
+    for i in products:
+        thisSum = 0
+        rollAmount += 1
+        for j in i:
+            thisSum += j
+        if thisSum >= target:
+            targetAmount += 1
+    odds = targetAmount / rollAmount
     return odds
 
 

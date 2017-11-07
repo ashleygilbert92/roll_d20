@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $('#loading-indicator').hide();
     $("#averages_form").submit(function (event) {
         event.preventDefault();
         var roll = $('#roll').val();
@@ -22,6 +23,8 @@ $(document).ready(function () {
     });
     $("#probability_form").submit(function (event) {
         event.preventDefault();
+        $('#loading-indicator').show();
+        $('#probability_header').replaceWith('<h4 class="card-title" id="probability_header"></h4>');
         var four = $('#4').val();
         var six = $('#6').val();
         var eight = $('#8').val();
@@ -44,10 +47,12 @@ $(document).ready(function () {
             },
             type: 'POST',
             success: function (response) {
+                $('#loading-indicator').hide();
                 $('#probability_header').replaceWith('<h4 class="card-title" id="probability_header">' +
                     response['probability'].toLocaleString() + '&#37;</h4>');
             },
             error: function (error) {
+                $('#loading-indicator').hide();
                 console.log(error);
                 alert("Something weird happened while calculating probability. Please Try again!")
             }

@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% block content %}
+    <div id="loading-indicator"><img id="loading-indicator-img" src="/static/images/loading.gif"/></div>
     <div id="content">
         <div class="row text-center" id="prob_row1">
             <div class="col-md-4" id="averages_card">
@@ -53,9 +54,15 @@
                         <label class="control-label col-sm-4" for="{{ i }}">{{ i }}: </label>
                             <div class="col-sm-8">
                                 <select class="form-control" name="dice" id="{{ i }}" required>
+                                {% if i != 6 %}
                                     {% for n in range(0, 6) %}
                                         <option>{{ n }}</option>
                                     {% endfor %}
+                                {% else %}
+                                    {% for n in range(0, 21) %}
+                                        <option>{{ n }}</option>
+                                    {% endfor %}
+                                {% endif %}
                                 </select>
                             </div>
                         </div>
