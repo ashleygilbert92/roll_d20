@@ -32,7 +32,7 @@ def load_user(user_id):
 def home():
     #TODO create logged in home page
     if current_user.is_authenticated:
-        return render_template('campaigns.html', current_user=current_user)
+        return redirect(url_for('campaigns'))
     else:
         return render_template('home.html', current_user=current_user)
 
