@@ -11,7 +11,7 @@
                 {% for play_session in play_sessions %}
                     <a href="/play_sessions/{{ play_session.id }}/" class="list-group-item list-group-item-action list-group-item-success">{{ play_session.date }}</a>
                 {% endfor %}
-                <button id="add_session" data-toggle="modal" data-target="#add_session_modal" class="list-group-item list-group-item-action list-group-item-success">
+                <button id="add_session" data-toggle="modal" data-target="#add_session_modal" class="list-group-item list-group-item-action list-group-item-secondary">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <span>&emsp;New Session</span>
                 </button>

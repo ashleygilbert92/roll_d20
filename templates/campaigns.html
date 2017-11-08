@@ -7,7 +7,7 @@
                 {% for campaign in campaigns %}
                     <a href="/campaigns/{{ campaign.id }}/" class="list-group-item list-group-item-action list-group-item-success">{{ campaign.name }}</a>
                 {% endfor %}
-                <button id="add_campaign" data-toggle="modal" data-target="#add_campaign_modal" class="list-group-item list-group-item-action list-group-item-success">
+                <button id="add_campaign" data-toggle="modal" data-target="#add_campaign_modal" class="list-group-item list-group-item-action list-group-item-secondary">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <span>&emsp;New Campaign</span>
                 </button>
