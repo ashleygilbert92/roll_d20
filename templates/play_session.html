@@ -1,4 +1,83 @@
 {% extends 'index.html' %}
 {% block content %}
-    Play Sessions
+    <div id="content">
+        <a href="/campaigns/" id="back" class="btn btn-success">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            <span>&emsp;Back to campaigns</span>
+        </a>
+        <div class="text-center" id="play_sessions">
+            <h2>Choose a play session:</h2>
+            <ul class="list-group">
+                {% for play_session in play_sessions %}
+                    <a href="/play_sessions/{{ play_session.id }}/" class="list-group-item list-group-item-action list-group-item-success">{{ play_session.date }}</a>
+                {% endfor %}
+                <button id="add_session" data-toggle="modal" data-target="#add_session_modal" class="list-group-item list-group-item-action list-group-item-success">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <span>&emsp;New Session</span>
+                </button>
+            </ul>
+        </div>
+        <div class="modal fade" id="add_session_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Play Session</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                    <div id="add_session_div">
+                        <form id="session_form">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="date">Date:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="date" name="date" placeholder="MM-DD-YYYY" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="description">Description:</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="submit_session" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    {% block play_session_scripts %}
+        <script>
+        $(document).ready(function () {
+            $("#submit_session").click(function (event) {
+                event.preventDefault();
+                var date = $('#date').val();
+                var description = $('#description').val();
+                $.ajax({
+                    url: '/add_play_session/',
+                    data: {
+                        'campaign_id': {{ campaign_id }},
+                        'date': date,
+                        'description': description
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while adding your new session. Make sure you input all fields correctly")
+                    }
+                });
+            });
+        });
+        </script>
+    {% endblock %}
 {% endblock %}

@@ -48,8 +48,8 @@ $(document).ready(function () {
             type: 'POST',
             success: function (response) {
                 $('#loading-indicator').hide();
-                $('#probability_header').replaceWith('<h4 class="card-title" id="probability_header">' +
-                    response['probability'].toLocaleString() + '&#37;</h4>');
+                $('#probability_header').replaceWith('<h3 class="card-title" id="probability_header">' +
+                    response['probability'].toLocaleString() + '&#37;</h3>');
             },
             error: function (error) {
                 $('#loading-indicator').hide();

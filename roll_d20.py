@@ -77,6 +77,17 @@ def campaigns():
         return redirect(url_for('login'))
 
 
+@app.route('/add_campaign/', methods=['GET', 'POST'])
+def add_campaign():
+    name = request.values.get('name', None)
+    new_campaign = models.CampaignModel()
+    new_campaign.user_id = current_user.id
+    new_campaign.name = name
+    session.add(new_campaign)
+    session.commit()
+    return jsonify({"next": "/campaigns/{}".format(new_campaign.id)})
+
+
 @app.route('/campaigns/<campaign_id>/')
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
@@ -84,7 +95,44 @@ def play_sessions(campaign_id):
         if len(campaign) > 1 or len(campaign) <= 0 or campaign[0].user_id != current_user.id:
             return abort(400)
         campaign = campaign[0]
-        return render_template('play_session.html', current_user=current_user)
+        play_session_list = session.query(models.PlaySessionModel).\
+            filter(models.PlaySessionModel.campaign_id == campaign.id).all()
+        return render_template('play_session.html', current_user=current_user,
+                               play_sessions=play_session_list, campaign_id=campaign_id)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/add_play_session/', methods=['GET', 'POST'])
+def add_play_session():
+    campaign_id = int(request.values.get('campaign_id', None))
+    try:
+        date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
+    except Exception as e:
+        return abort(400, message="Invalid Date")
+
+    description = request.values.get('description', None)
+    new_play_session = models.PlaySessionModel()
+    new_play_session.campaign_id = campaign_id
+    new_play_session.date = date
+    new_play_session.description = description
+    session.add(new_play_session)
+    session.commit()
+    return jsonify({"next": "/play_sessions/{}".format(new_play_session.id)})
+
+
+@app.route('/play_sessions/<session_id>/')
+def encounters(session_id):
+    if current_user.is_authenticated:
+        play_session = session.query(models.PlaySessionModel).filter(models.PlaySessionModel.id == session_id).all()
+        if len(play_session) > 1 or len(play_session) <= 0:
+            return abort(400)
+        play_session = play_session[0]
+        campaign_id = play_session.campaign_id
+        campaign = session.query(models.CampaignModel).filter(models.CampaignModel.id == campaign_id).first()
+        if campaign.user_id != current_user.id:
+            return abort(400)
+        return render_template('encounters.html', current_user=current_user, play_session=play_session)
     else:
         return redirect(url_for('login'))
 
