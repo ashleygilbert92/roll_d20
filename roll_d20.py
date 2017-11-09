@@ -85,7 +85,7 @@ def add_campaign():
     new_campaign.name = name
     session.add(new_campaign)
     session.commit()
-    return jsonify({"next": "/campaigns/{}".format(new_campaign.id)})
+    return jsonify({"next": "/campaigns/{}/".format(new_campaign.id)})
 
 
 @app.route('/campaigns/<campaign_id>/')
@@ -118,7 +118,7 @@ def add_play_session():
     new_play_session.description = description
     session.add(new_play_session)
     session.commit()
-    return jsonify({"next": "/play_sessions/{}".format(new_play_session.id)})
+    return jsonify({"next": "/play_sessions/{}/".format(new_play_session.id)})
 
 
 @app.route('/play_sessions/<session_id>/')
