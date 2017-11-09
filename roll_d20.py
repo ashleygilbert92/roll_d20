@@ -16,11 +16,11 @@ login_manager.session_protection = 'strong'
 
 Session = get_session_factory()
 # Session = scoped_session(session_factory)
-session = Session()
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    session = Session()
     user = session.query(models.UserModel).get(int(user_id))
     if user:
         return user
@@ -47,6 +47,7 @@ def login():
 
 @app.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
+    session = Session()
     username = request.values.get('username', None)
     users = session.query(models.UserModel).filter(models.UserModel.username == username).all()
     if len(users) > 1:
@@ -70,6 +71,7 @@ def logout():
 @app.route('/campaigns/')
 def campaigns():
     if current_user.is_authenticated:
+        session = Session()
         campaign_list = session.query(models.CampaignModel)\
             .filter(models.CampaignModel.user_id == current_user.id).all()
         return render_template('campaigns.html', current_user=current_user, campaigns=campaign_list)
@@ -82,6 +84,7 @@ def add_campaign():
     name = request.values.get('name', None)
     if name is "":
         return 404
+    session = Session()
     new_campaign = models.CampaignModel()
     new_campaign.user_id = current_user.id
     new_campaign.name = name
@@ -94,6 +97,7 @@ def add_campaign():
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
         campaign = None
+        session = Session()
         for i in range(0, 5):
             campaign = session.query(models.CampaignModel).get(campaign_id)
             if campaign:
@@ -117,7 +121,7 @@ def add_play_session():
         date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
     except Exception as e:
         return abort(405, message="Invalid Date")
-
+    session = Session()
     description = request.values.get('description', None)
     new_play_session = models.PlaySessionModel()
     new_play_session.campaign_id = campaign_id
@@ -131,6 +135,7 @@ def add_play_session():
 @app.route('/play_sessions/<session_id>/')
 def encounters(session_id):
     if current_user.is_authenticated:
+        session = Session()
         play_session = session.query(models.PlaySessionModel).get(session_id)
         if play_session is None:
             return abort(405)
@@ -163,6 +168,7 @@ def probability():
 
 @app.route('/add_roll/', methods=['GET', 'POST'])
 def add_roll():
+    session = Session()
     roll = int(request.values.get('roll', None))
     date = datetime.datetime.now().date()
     new_prob = models.ProbabilityModel()
@@ -202,6 +208,7 @@ def grid_overlay():
 def player_feedback():
 
     if current_user.is_authenticated:
+        session = Session()
         campaign_list = session.query(models.CampaignModel).\
             filter(models.CampaignModel.user_id == current_user.id).all()
         info = dict()
@@ -215,6 +222,7 @@ def player_feedback():
 
         return render_template('player_feedback.html', current_user=current_user, info=info)
     else:
+        session = Session()
         campaign_list = session.query(models.CampaignModel).all()
         campaign_info = dict()
         for campaign in campaign_list:
@@ -233,7 +241,7 @@ def submit_feedback():
         date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
     except Exception as e:
         return abort(400, message="Invalid Date")
-
+    session = Session()
     feedback = request.values.get('feedback', None)
     campaign = session.query(models.CampaignModel).filter(models.CampaignModel.name == campaign_name).all()
     if len(campaign) != 1:
@@ -249,6 +257,7 @@ def submit_feedback():
 
 
 def calculate_average():
+    session = Session()
     all_probability = session.query(models.ProbabilityModel).all()
     total_rolls = len(all_probability)
     total_sum = 0
