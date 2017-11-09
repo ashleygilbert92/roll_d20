@@ -6,10 +6,13 @@
             <span>&emsp;Back to campaigns</span>
         </a>
         <div class="text-center" id="play_sessions">
-            <h2>Choose a play session:</h2>
+            <h2>{{ campaign.name }}</h2>
+        <br/>
+            <h5>Choose a play session:</h5>
             <ul class="list-group">
                 {% for play_session in play_sessions %}
-                    <a href="/play_sessions/{{ play_session.id }}/" class="list-group-item list-group-item-action list-group-item-success">{{ play_session.date }}</a>
+                    <a href="/play_sessions/{{ play_session.id }}/" class="list-group-item list-group-item-action list-group-item-success">
+                        {{ play_session.date.strftime('%m-%d-%Y') }}<br />{{ play_session.description }}</a>
                 {% endfor %}
                 <button id="add_session" data-toggle="modal" data-target="#add_session_modal" class="list-group-item list-group-item-action list-group-item-secondary">
                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -63,7 +66,7 @@
                 $.ajax({
                     url: '/add_play_session/',
                     data: {
-                        'campaign_id': {{ campaign_id }},
+                        'campaign_id': {{ campaign.id }},
                         'date': date,
                         'description': description
                     },

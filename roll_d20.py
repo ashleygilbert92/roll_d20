@@ -15,7 +15,6 @@ login_manager.init_app(app)
 login_manager.session_protection = 'strong'
 
 Session = get_session_factory()
-# Session = scoped_session(session_factory)
 
 
 @login_manager.user_loader
@@ -51,7 +50,7 @@ def authenticate():
     username = request.values.get('username', None)
     users = session.query(models.UserModel).filter(models.UserModel.username == username).all()
     if len(users) > 1:
-        return abort(400)
+        return abort(404)
     user = users[0]
     if user is not None and user.verify_password(request.values.get('password', None)):
         login_user(user)
@@ -96,20 +95,16 @@ def add_campaign():
 @app.route('/campaigns/<campaign_id>/')
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
-        campaign = None
         session = Session()
-        for i in range(0, 5):
-            campaign = session.query(models.CampaignModel).get(campaign_id)
-            if campaign:
-                break
+        campaign = session.query(models.CampaignModel).get(campaign_id)
         if campaign is None:
             return abort(404)
         if campaign.user_id != current_user.id:
             return abort(401)
         play_session_list = session.query(models.PlaySessionModel).\
             filter(models.PlaySessionModel.campaign_id == campaign.id).all()
-        return render_template('play_session.html', current_user=current_user,
-                               play_sessions=play_session_list, campaign_id=campaign_id)
+        return render_template('play_sessions.html', current_user=current_user,
+                               play_sessions=play_session_list, campaign=campaign)
     else:
         return redirect(url_for('login'))
 
@@ -120,7 +115,7 @@ def add_play_session():
     try:
         date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
     except Exception as e:
-        return abort(405, message="Invalid Date")
+        return abort(404, message="Invalid Date")
     session = Session()
     description = request.values.get('description', None)
     new_play_session = models.PlaySessionModel()
@@ -138,12 +133,72 @@ def encounters(session_id):
         session = Session()
         play_session = session.query(models.PlaySessionModel).get(session_id)
         if play_session is None:
-            return abort(405)
+            return abort(404)
         campaign_id = play_session.campaign_id
         campaign = session.query(models.CampaignModel).get(campaign_id)
-        if campaign is None or campaign.user_id != current_user.id:
-            return abort(405)
-        return render_template('encounters.html', current_user=current_user, play_session=play_session)
+        if campaign is None:
+            return abort(404)
+        if campaign.user_id != current_user.id:
+            return abort(401)
+        encounters_list = session.query(models.EncounterModel).\
+            filter(models.EncounterModel.session_id == session_id).all()
+        session_notes_list = session.query(models.SessionNoteModel).\
+            filter(models.SessionNoteModel.session_id == session_id)
+        return render_template('encounters.html', current_user=current_user,
+                               play_session=play_session, encounters=encounters_list, session_notes=session_notes_list)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/add_session_notes/', methods=['GET', 'POST'])
+def session_notes():
+    session_id = int(request.values.get('session_id', None))
+    session = Session()
+    notes = request.values.get('notes', None)
+    new_session_note = models.SessionNoteModel()
+    new_session_note.session_id = session_id
+    new_session_note.notes = notes
+    session.add(new_session_note)
+    session.commit()
+    return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+
+
+@app.route('/add_encounter/', methods=['GET', 'POST'])
+def add_encounter():
+    session_id = int(request.values.get('session_id', None))
+    session = Session()
+    name = request.values.get('name', None)
+    description = request.values.get('description', None)
+    new_encounter = models.EncounterModel()
+    new_encounter.session_id = session_id
+    new_encounter.name = name
+    new_encounter.description = description
+    session.add(new_encounter)
+    session.commit()
+    return jsonify({"next": "/encounters/{}/".format(new_encounter.id)})
+
+
+@app.route('/encounters/<encounter_id>/')
+def encounter_actions(encounter_id):
+    if current_user.is_authenticated:
+        session = Session()
+        encounter = session.query(models.EncounterModel).get(encounter_id)
+        if encounter is None:
+            return abort(404)
+        session_id = encounter.session_id
+        play_session = session.query(models.PlaySessionModel).get(session_id)
+        if play_session is None:
+            return abort(404)
+        campaign_id = play_session.campaign_id
+        campaign = session.query(models.CampaignModel).get(campaign_id)
+        if campaign is None:
+            return abort(404)
+        if campaign.user_id != current_user.id:
+            return abort(401)
+        encounters_actions_list = session.query(models.EncounterActionModel).\
+            filter(models.EncounterActionModel.encounter_id == encounter_id).all()
+        return render_template('encounter_actions.html', current_user=current_user,
+                               encounter=encounter, encounter_actions=encounters_actions_list)
     else:
         return redirect(url_for('login'))
 

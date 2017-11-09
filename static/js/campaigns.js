@@ -13,7 +13,7 @@ $(document).ready(function () {
             },
             error: function (error) {
                 console.log(error);
-                alert("Something weird happened while adding your new session. Make sure you input all fields correctly")
+                alert("Something weird happened while adding your new campaign. Make sure you input all fields correctly")
             }
         });
     });

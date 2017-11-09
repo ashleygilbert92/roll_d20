@@ -42,6 +42,18 @@ Oct 4th: I created my server, domain, basic flask app, mysql database with table
 
 ## Checkpoint 2:
 Oct 23rd: I have created a login page with session handling across the website (username: ashleymia92@gmail.com 
-passwoord: P@ssword1), I've created the dice roll/probability page, I've created the player feedback page for non 
+password: P@ssword1), I've created the dice roll/probability page, I've created the player feedback page for non 
 logged in users and logged in users. I still need to create the forms for the play session page and have those 
 figured out. Will work on this more and have these tasks finished by the end of the week. 
+
+
+## Checkpoint 3: 
+November 8th: I definitely overpromised on this one but I did still get a fair amount of it done. Styling and color still allude me but I'm trying.
+I finished all pages for campaign, play session, notes, and list of encounters. I was not able to finish the final encounter view though. 
+That one will be finished this week at the latest. I also spent a lot of time trying to debug sqlalchemy. It did not like me using one session 
+for all of my actions. That one took me about and hour or more to figure out. Decided to create a new session for every action. All of the forms/modals
+on these pages should work and are fully finished. I want to spend some more time on styling but I'm not sure I'll have time. The play session
+page that contains notes and a list of encounters really needs fixed in that area. I'll work on this as much as I can. I changed my mind about the
+DM dashboard and that basically turned into the Campaign management section. I want to have a home page for logged in users that just
+shows some cool stats or an overview of some kind. We'll see if I get to that. I hope so. The styling on the Probability page needs fixed too.
+I'm getting somewhere but I've still got a long way to go.

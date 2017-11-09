@@ -3,6 +3,154 @@
     <div id="content">
         <a href="/campaigns/{{ play_session.campaign_id }}/" id="back" class="btn btn-success">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            <span>&emsp;Back to play_sessions</span>
+            <span>&emsp;Back to play sessions</span>
         </a>
+
+        <div id="encounters" class="text-center">
+            <h3>{{ play_session.date.strftime('%m-%d-%Y') }}</h3>
+            <h3>{{ play_session.description }}</h3>
+
+            <div class="row text-center" id="play_session_row">
+                <div class="col-md-6 card text-white" id="session_notes" style="background-color: #704C5E;">
+                    <div class="card-header">Notes:</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for session_note in session_notes %}
+                                <li class="list-group-item" style="color: #5B5B5B !important;">{{ session_note.notes }}</li>
+                            {% endfor %}
+                            <button id="add_note" data-toggle="modal" data-target="#add_note_modal" class="list-group-item list-group-item-action list-group-item-secondary">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                <span>&emsp;New Note</span>
+                            </button>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="col-md-6 card text-white" id="encounters_list" style="background-color: #704C5E;">
+                    <div class="card-header">Encounters:</div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for encounter in encounters %}
+                                <a href="/encounters/{{ encounter.id }}/" class="list-group-item list-group-item-action">
+                                    {{ encounter.name }}<br />{{ encounter.description }}</a>
+                            {% endfor %}
+                            <button id="add_encounter" data-toggle="modal" data-target="#add_encounter_modal" class="list-group-item list-group-item-action list-group-item-secondary">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                <span>&emsp;New Encounter</span>
+                            </button>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add_note_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                    <div id="add_note_div">
+                        <form id="note_form">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="notes">Notes:</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" id="notes" name="notes" maxlength="65499" required></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="submit_note" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="add_encounter_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Encounter</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                    <div id="add_encounter_div">
+                        <form id="encounter_form">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="name">Encounter Name:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="description">Description:</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="submit_encounter" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    {% block encounters_scripts %}
+        <script>
+        $(document).ready(function () {
+            $("#submit_note").click(function (event) {
+                event.preventDefault();
+                var notes = $('#notes').val();
+                $.ajax({
+                    url: '/add_session_notes/',
+                    data: {
+                        'session_id': {{ play_session.id }},
+                        'notes': notes
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while adding your note. Make sure you input all fields correctly")
+                    }
+                });
+            });
+            $("#submit_encounter").click(function (event) {
+                event.preventDefault();
+                var name = $('#name').val();
+                var description = $('#description').val();
+                $.ajax({
+                    url: '/add_encounter/',
+                    data: {
+                        'session_id': {{ play_session.id }},
+                        'name': name,
+                        'description': description
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while adding your new encounter. Make sure you input all fields correctly")
+                    }
+                });
+            });
+        });
+        </script>
+    {% endblock %}
 {% endblock %}

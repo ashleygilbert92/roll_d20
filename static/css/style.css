@@ -167,3 +167,19 @@ body {
 #back {
     margin: 20px 0 5px 20px;
 }
+
+#encounters {
+    color: #5B5B5B !important;
+}
+
+#session_notes {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 0;
+}
+
+#encounters_list {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 0;
+}
