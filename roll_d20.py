@@ -93,7 +93,11 @@ def add_campaign():
 @app.route('/campaigns/<campaign_id>/')
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
-        campaign = session.query(models.CampaignModel).get(campaign_id)
+        campaign = None
+        for i in range(0, 5):
+            campaign = session.query(models.CampaignModel).get(campaign_id)
+            if campaign:
+                break
         if campaign is None:
             return abort(404)
         if campaign.user_id != current_user.id:
