@@ -13,7 +13,7 @@ DB_PATH = 'mysql+pymysql://{}:{}@{}/roll_d20'.format(DB_USERNAME, DB_PASS, DB_SE
 
 def get_session_factory():
     engine = create_engine(DB_PATH, pool_size=50, max_overflow=0, pool_recycle=3600)
-    session = sessionmaker(bind=engine, expire_on_commit=False)
+    session = sessionmaker(bind=engine)
     return session
 
 
