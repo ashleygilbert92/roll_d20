@@ -14,8 +14,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = 'strong'
 
-session_factory = get_session_factory()
-Session = scoped_session(session_factory)
+Session = get_session_factory()
+# Session = scoped_session(session_factory)
 session = Session()
 
 
