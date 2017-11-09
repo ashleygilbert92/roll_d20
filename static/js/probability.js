@@ -24,7 +24,7 @@ $(document).ready(function () {
     $("#probability_form").submit(function (event) {
         event.preventDefault();
         $('#loading-indicator').show();
-        $('#probability_header').replaceWith('<h4 class="card-title" id="probability_header"></h4>');
+        $('#probability_header').replaceWith('<h2 class="card-title" id="probability_header"></h2>');
         var four = $('#4').val();
         var six = $('#6').val();
         var eight = $('#8').val();
@@ -48,8 +48,8 @@ $(document).ready(function () {
             type: 'POST',
             success: function (response) {
                 $('#loading-indicator').hide();
-                $('#probability_header').replaceWith('<h3 class="card-title" id="probability_header">' +
-                    response['probability'].toLocaleString() + '&#37;</h3>');
+                $('#probability_header').replaceWith('<h2 class="card-title" id="probability_header">' +
+                    response['probability'].toLocaleString() + '&#37;</h2>');
             },
             error: function (error) {
                 $('#loading-indicator').hide();

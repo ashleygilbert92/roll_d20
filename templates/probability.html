@@ -4,22 +4,6 @@
     <div id="content">
         <div class="row text-center" id="prob_row1">
             <div class="col-md-4" id="averages_card">
-                <div class="card text-white" id="averages_card2" style="background-color: #88A09E;">
-                    <div class="card-header">Today D20 Average</div>
-                    <div class="card-body">
-                        <h4 class="card-title" id="today_average">{{ '%0.2f' % today_average|float }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="averages_card">
-                <div class="card text-white" id="averages_card2" style="background-color: #704C5E;">
-                    <div class="card-header">Overall D20 Average</div>
-                    <div class="card-body">
-                        <h4 class="card-title" id="total_average">{{ '%0.2f' % total_average|float }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="averages_card">
                 <form id="averages_form">
                     <h4 class="text-center">Add D20 Roll</h4>
                     <div class="form-group row">
@@ -38,10 +22,26 @@
                     </div>
                 </form>
             </div>
+            <div class="col-md-4" id="averages_card">
+                <div class="card text-white" id="averages_card2" style="background-color: #88A09E;">
+                    <div class="card-header">Today D20 Average</div>
+                    <div class="card-body">
+                        <h4 class="card-title" id="today_average">{{ '%0.2f' % today_average|float }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="averages_card">
+                <div class="card text-white" id="averages_card2" style="background-color: #704C5E;">
+                    <div class="card-header">Overall D20 Average</div>
+                    <div class="card-body">
+                        <h4 class="card-title" id="total_average">{{ '%0.2f' % total_average|float }}</h4>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row text-center" id="prob_row2">
             <div class="col-md-6" id="probability_card">
-                <form id="probability_form">
+                <form class="form-inline" id="probability_form">
                     <h4 class="text-center">Dice Probabilities</h4>
                     <div class="form-group row">
                         <label class="control-label col-sm-6" for="target">Probability Target:</label>
@@ -78,7 +78,7 @@
                 <div class="card text-white" id="probability_card3" style="background-color: #6D98BA;">
                     <div class="card-header">Probability</div>
                     <div class="card-body" id="card_body_stuff">
-                        <h3 class="card-title" id="probability_header"></h3>
+                        <h2 class="card-title" id="probability_header"></h2>
                     </div>
                 </div>
             </div>
