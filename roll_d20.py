@@ -80,6 +80,8 @@ def campaigns():
 @app.route('/add_campaign/', methods=['GET', 'POST'])
 def add_campaign():
     name = request.values.get('name', None)
+    if name is None:
+        return 405
     new_campaign = models.CampaignModel()
     new_campaign.user_id = current_user.id
     new_campaign.name = name
@@ -91,10 +93,9 @@ def add_campaign():
 @app.route('/campaigns/<campaign_id>/')
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
-        campaign = session.query(models.CampaignModel).filter(models.CampaignModel.id == campaign_id).all()
-        if len(campaign) > 1 or len(campaign) <= 0 or campaign[0].user_id != current_user.id:
-            return abort(400)
-        campaign = campaign[0]
+        campaign = session.query(models.CampaignModel).get(campaign_id)
+        if campaign is None or campaign.user_id != current_user.id:
+            return abort(405)
         play_session_list = session.query(models.PlaySessionModel).\
             filter(models.PlaySessionModel.campaign_id == campaign.id).all()
         return render_template('play_session.html', current_user=current_user,
@@ -109,7 +110,7 @@ def add_play_session():
     try:
         date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
     except Exception as e:
-        return abort(400, message="Invalid Date")
+        return abort(405, message="Invalid Date")
 
     description = request.values.get('description', None)
     new_play_session = models.PlaySessionModel()
@@ -124,14 +125,13 @@ def add_play_session():
 @app.route('/play_sessions/<session_id>/')
 def encounters(session_id):
     if current_user.is_authenticated:
-        play_session = session.query(models.PlaySessionModel).filter(models.PlaySessionModel.id == session_id).all()
-        if len(play_session) > 1 or len(play_session) <= 0:
-            return abort(400)
-        play_session = play_session[0]
+        play_session = session.query(models.PlaySessionModel).get(session_id)
+        if play_session is None:
+            return abort(405)
         campaign_id = play_session.campaign_id
-        campaign = session.query(models.CampaignModel).filter(models.CampaignModel.id == campaign_id).first()
-        if campaign.user_id != current_user.id:
-            return abort(400)
+        campaign = session.query(models.CampaignModel).get(campaign_id)
+        if campaign is None or campaign.user_id != current_user.id:
+            return abort(405)
         return render_template('encounters.html', current_user=current_user, play_session=play_session)
     else:
         return redirect(url_for('login'))
