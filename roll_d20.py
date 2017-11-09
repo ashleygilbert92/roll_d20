@@ -80,8 +80,8 @@ def campaigns():
 @app.route('/add_campaign/', methods=['GET', 'POST'])
 def add_campaign():
     name = request.values.get('name', None)
-    if name is None:
-        return 405
+    if name is "":
+        return 404
     new_campaign = models.CampaignModel()
     new_campaign.user_id = current_user.id
     new_campaign.name = name
@@ -94,8 +94,10 @@ def add_campaign():
 def play_sessions(campaign_id):
     if current_user.is_authenticated:
         campaign = session.query(models.CampaignModel).get(campaign_id)
-        if campaign is None or campaign.user_id != current_user.id:
-            return abort(405)
+        if campaign is None:
+            return abort(404)
+        if campaign.user_id != current_user.id:
+            return abort(401)
         play_session_list = session.query(models.PlaySessionModel).\
             filter(models.PlaySessionModel.campaign_id == campaign.id).all()
         return render_template('play_session.html', current_user=current_user,
