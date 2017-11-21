@@ -19,7 +19,7 @@
                                 <td>{{ feedback.date }}</td>
                                 <td>{{ feedback.player_name }}</td>
                                 <td>{{ key }}</td>
-                                <td style="max-width: 300px;">{{ feedback.feedback }}</td>
+                                <td style="max-width: 300px;">{{ feedback.feedback |safe }}</td>
                             </tr>
                         {% endfor %}
                     {% endfor %}

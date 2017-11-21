@@ -103,8 +103,9 @@ def play_sessions(campaign_id):
             return abort(401)
         play_session_list = session.query(models.PlaySessionModel).\
             filter(models.PlaySessionModel.campaign_id == campaign.id).all()
+        players_list = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign.id).all()
         return render_template('play_sessions.html', current_user=current_user,
-                               play_sessions=play_session_list, campaign=campaign)
+                               play_sessions=play_session_list, campaign=campaign, players=players_list)
     else:
         return redirect(url_for('login'))
 
@@ -125,6 +126,71 @@ def add_play_session():
     session.add(new_play_session)
     session.commit()
     return jsonify({"next": "/play_sessions/{}/".format(new_play_session.id)})
+
+
+@app.route('/add_player/', methods=['GET', 'POST'])
+def add_player():
+    campaign_id = int(request.values.get('campaign_id', None))
+    name = request.values.get('name', None)
+    class1 = request.values.get('class1', None)
+    class2 = request.values.get('class2', None)
+    level = int(request.values.get('level', None))
+    mythic_tier = int(request.values.get('mythic_tier', None))
+    exp = int(request.values.get('exp', None))
+    session = Session()
+    new_player = models.PlayerModel()
+    new_player.campaign_id = campaign_id
+    new_player.name = name
+    new_player.class1 = class1
+    new_player.class2 = class2
+    new_player.level = level
+    new_player.mythic_tier = mythic_tier
+    new_player.exp = exp
+    session.add(new_player)
+    session.commit()
+    return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
+
+
+@app.route('/get_player/', methods=['GET', 'POST'])
+def get_player():
+    player_id = int(request.values.get('player_id', None))
+    session = Session()
+    player = session.query(models.PlayerModel).get(player_id)
+    return jsonify({"player": {
+        "id": player.id,
+        "campaign_id": player.campaign_id,
+        "name": player.name,
+        "class1": player.class1,
+        "class2": player.class2,
+        "level": player.level,
+        "mythic_tier": player.mythic_tier,
+        "exp": player.exp
+    }})
+
+
+@app.route('/edit_player/', methods=['GET', 'PUT'])
+def edit_player():
+    campaign_id = int(request.values.get('campaign_id', None))
+    player_id = int(request.values.get('player_id', None))
+    name = request.values.get('name', None)
+    class1 = request.values.get('class1', None)
+    class2 = request.values.get('class2', None)
+    level = int(request.values.get('level', None))
+    mythic_tier = int(request.values.get('mythic_tier', None))
+    exp = int(request.values.get('exp', None))
+    session = Session()
+    player = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign_id)\
+        .filter(models.PlayerModel.id == player_id).one()
+    player.campaign_id = campaign_id
+    player.name = name
+    player.class1 = class1
+    player.class2 = class2
+    player.level = level
+    player.mythic_tier = mythic_tier
+    player.exp = exp
+    session.add(player)
+    session.commit()
+    return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
 
 
 @app.route('/play_sessions/<session_id>/')
@@ -155,6 +221,8 @@ def session_notes():
     session_id = int(request.values.get('session_id', None))
     session = Session()
     notes = request.values.get('notes', None)
+    r = '<br />'
+    notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
     new_session_note = models.SessionNoteModel()
     new_session_note.session_id = session_id
     new_session_note.notes = notes
@@ -298,6 +366,9 @@ def submit_feedback():
         return abort(400, message="Invalid Date")
     session = Session()
     feedback = request.values.get('feedback', None)
+    r = '<br />'
+    feedback = feedback.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
+
     campaign = session.query(models.CampaignModel).filter(models.CampaignModel.name == campaign_name).all()
     if len(campaign) != 1:
         return abort(400, message="Error with finding campaign with name: {}".format(campaign_name))
