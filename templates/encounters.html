@@ -8,44 +8,44 @@
 
         <div id="encounters" class="text-center">
             <h2>{{ play_session.date.strftime('%m-%d-%Y') }}</h2>
-            <h2>{{ play_session.description }}</h2>
-
+            <h4>{{ play_session.description }}</h4>
+            <br>
             <div class="row" id="play_session_row">
-                <div class="col-md-6 card text-white" id="session_notes" style="background-color: #704C5E;">
-                    <div class="card-header text-center"><h4>Notes:</h4></div>
-                    <div class="card-body text-left">
-                        <ul class="list-group">
-                            {% for session_note in session_notes %}
-                                <li class="list-group-item" style="color: #5B5B5B !important;">{{ session_note.notes | safe }}</li>
-                            {% endfor %}
-                            <button id="add_note" data-toggle="modal" data-target="#add_note_modal" class="list-group-item list-group-item-action list-group-item-secondary">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                <span>&emsp;New Note</span>
-                            </button>
-                        </ul>
-                    </div>
 
+                <div class="col" id="encounters_list">
+                    <h4>Encounters:</h4>
+                    <ul class="list-group">
+                        {% for encounter in encounters %}
+                            <a href="/encounters/{{ encounter.id }}/" class="list-group-item list-group-item-action list-group-item-success">
+                                <h4>{{ encounter.name }}</h4>
+                                <h6>{{ encounter.description }}</h6>
+                            </a>
+                        {% endfor %}
+                        <button id="add_encounter" data-toggle="modal" data-target="#add_encounter_modal" class="list-group-item list-group-item-action list-group-item-secondary">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            <span>&emsp;New Encounter</span>
+                        </button>
+                    </ul>
                 </div>
-                <div class="col-md-6 card text-white" id="encounters_list" style="background-color: #704C5E;">
-                    <div class="card-header"><h4>Encounters:</h4></div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            {% for encounter in encounters %}
-                                <a href="/encounters/{{ encounter.id }}/" class="list-group-item list-group-item-action">
-                                    <h4>{{ encounter.name }}</h4>
-                                    <h6>{{ encounter.description }}</h6>
-                                </a>
-                            {% endfor %}
-                            <button id="add_encounter" data-toggle="modal" data-target="#add_encounter_modal" class="list-group-item list-group-item-action list-group-item-secondary">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                <span>&emsp;New Encounter</span>
-                            </button>
-                        </ul>
-                    </div>
 
+
+                <div class="col" id="session_notes">
+                    <h4>Notes:</h4>
+
+                    <ul class="list-group">
+                        {% for session_note in session_notes %}
+                            <li class="list-group-item list-group-item-success" style="color: #5B5B5B !important;">{{ session_note.notes | safe }}</li>
+                        {% endfor %}
+                        <button id="add_note" data-toggle="modal" data-target="#add_note_modal" class="list-group-item list-group-item-action list-group-item-secondary">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            <span>&emsp;New Note</span>
+                        </button>
+                    </ul>
                 </div>
+
             </div>
         </div>
+
         <div class="modal fade" id="add_note_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">

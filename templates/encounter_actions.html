@@ -6,8 +6,199 @@
             <span>&emsp;Back to play session</span>
         </a>
         <div id="encounter_actions" class="text-center">
-            
+            <h2>{{ encounter.name }}</h2>
+            <h4>{{ encounter.description }}</h4>
+            <br>
+            <div class="row">
+                <div class="col" id="actions">
+                    <h4>Actions:</h4>
+                    <table class="table table-success table-responsive rounded" id="encounter_action_table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Damage Taken</th>
+                                <th>Damage Done</th>
+{#                                <th>Spells Cast</th>#}
+                                <th>Healing</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for action in encounter_actions %}
+                            <tr>
+                                <td>
+                                    {% for player in players %}
+                                        {% if player.id == action.player_id %}
+                                            {{ player.name | e }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ action.damage_taken if action.damage_taken != None else 0 }}</td>
+                                <td>{{ action.damage_done if action.damage_done != None else 0}}</td>
+{#                                <td>{{ action.spells_cast }}</td>#}
+                                <td>{{ action.healing if action.healing != None else 0}}</td>
+                                <td>
+                                    <button id="edit_encounter_action" data-toggle="modal" data-target="#edit_encounter_action_modal" class="rounded">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        <span>&emsp;Edit</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                    <button id="add_encounter_action" data-toggle="modal" data-target="#add_encounter_action_modal" class="rounded list-group-item list-group-item-action list-group-item-secondary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <span>&emsp;Encounter Actions</span>
+                    </button>
+                </div>
+                <div class="col" id="player_encounter_totals">
+                    <h4>Encounter Totals:</h4>
+                    <table class="table table-success table-responsive rounded" id="encounter_totals_table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Damage Taken</th>
+                                <th>Damage Done</th>
+{#                                <th>Spells Cast</th>#}
+                                <th>Healing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set total_damage_taken = 0 %}
+                            {% set total_damage_done = 0 %}
+{#                            {% set total_spells_cast = 0 %}#}
+                            {% set total_healing = 0 %}
+                            {% for action in encounter_actions %}
+                                {% set total_damage_taken = total_damage_taken + action.damage_taken %}
+                                {% set total_damage_done = total_damage_done + action.damage_done %}
+{#                                {% set total_spells_cast = total_spells_cast + action.spells_cast %}#}
+                                {% set total_healing = total_healing + action.healing %}
+                            {% endfor %}
+                            <tr>
+                                <td>Total</td>
+                                <td>{{ total_damage_taken }}</td>
+                                <td>{{ total_damage_done }}</td>
+{#                                <td>{{ total_spells_cast }}</td>#}
+                                <td>{{ total_healing }}</td>
+                            </tr>
+                            {% for player in players %}
+                                {% set player_total_damage_taken = 0 %}
+                                {% set player_total_damage_done = 0 %}
+{#                                {% set player_total_spells_cast = 0 %}#}
+                                {% set player_total_healing = 0 %}
+                                {% for action in encounter_actions %}
+                                    {% if action.player_id == player.id %}
+                                        {% set player_total_damage_taken = player_total_damage_taken + action.damage_taken %}
+                                        {% set player_total_damage_done = player_total_damage_done + action.damage_done %}
+{#                                        {% set player_total_spells_cast = player_total_spells_cast + action.spells_cast %}#}
+                                        {% set player_total_healing = player_total_healing + action.healing %}
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{ player.name }}</td>
+                                <td>{{ player_total_damage_taken }}</td>
+                                <td>{{ player_total_damage_done }}</td>
+{#                                <td>{{ player_total_spells_cast }}</td>#}
+                                <td>{{ player_total_healing }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add_encounter_action_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Encounter Actions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                    <div id="add_encounter_action_div">
+                        <form id="note_form">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="player">Player:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="player" id="player" required>
+                                        {% for player in players %}
+                                            <option class="{{ player.name }}" id="{{ player.id }}">{{ player.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="damage_taken">Damage Taken:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="damage_taken" name="damage_taken" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="damage_done">Damage Done:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="damage_done" name="damage_done" required>
+                                </div>
+                            </div>
+{#                            <div class="form-group row">#}
+{#                                <label class="control-label col-sm-4" for="spells_cast"># Spells Cast:</label>#}
+{#                                <div class="col-sm-8">#}
+{#                                    <input type="text" class="form-control" id="spells_cast" name="spells_cast" required>#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4" for="healing">Healing:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="healing" name="healing" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="submit_encounter_actions" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
-
+    {% block encounters_scripts %}
+        <script>
+        $(document).ready(function () {
+            $("#submit_encounter_actions").click(function (event) {
+                event.preventDefault();
+                var player_id = $(this).find('option:selected').attr('id');
+                var damage_taken = $('#damage_taken').val();
+                var damage_done = $('#damage_done').val();
+{#                var spells_cast = $('#spells_cast').val();#}
+                var healing = $('#healing').val();
+                $.ajax({
+                    url: '/add_encounter_action/',
+                    data: {
+                        'encounter_id': {{ encounter.id }},
+                        'player_id': player_id,
+                        'damage_taken': damage_taken,
+                        'damage_done': damage_done,
+{#                        'spells_cast': spells_cast,#}
+                        'healing': healing
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while adding your note. Make sure you input all fields correctly")
+                    }
+                });
+            });
+        });
+        </script>
+    {% endblock %}
 {% endblock %}

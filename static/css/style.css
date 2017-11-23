@@ -131,7 +131,6 @@ body {
 #feedback_table{
     color: white !important;
     background-color: #704C5E !important;
-    border-radius: 25px;
 }
 
 #feedback_table thead tr th{
@@ -182,6 +181,12 @@ body {
     color: #5B5B5B !important;
 }
 
+#encounter_actions {
+    margin: 20px auto;
+    color: #5B5B5B !important;
+    max-width: 1000px;
+}
+
 #session_notes {
     max-width: 800px;
     margin: 30px auto;
@@ -192,4 +197,28 @@ body {
     max-width: 800px;
     margin: 30px auto;
     padding: 0 0;
+}
+
+
+#encounter_action_table {
+    color: #5B5B5B !important;
+    display: table !important;
+}
+
+#encounter_action_table thead tr th {
+    border-top: none !important;
+}
+
+#add_encounter_action {
+    max-width: 50%;
+    margin: 0px auto;
+}
+
+#encounter_totals_table {
+    color: #5B5B5B !important;
+    display: table !important;
+}
+
+#encounter_totals_table thead tr th {
+    border-top: none !important;
 }

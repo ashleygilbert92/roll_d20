@@ -265,8 +265,9 @@ def encounter_actions(encounter_id):
             return abort(401)
         encounters_actions_list = session.query(models.EncounterActionModel).\
             filter(models.EncounterActionModel.encounter_id == encounter_id).all()
+        players_list = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign.id)
         return render_template('encounter_actions.html', current_user=current_user,
-                               encounter=encounter, encounter_actions=encounters_actions_list)
+                               encounter=encounter, encounter_actions=encounters_actions_list, players=players_list)
     else:
         return redirect(url_for('login'))
 
