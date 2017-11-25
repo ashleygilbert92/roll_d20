@@ -137,8 +137,13 @@ def add_player():
     class1 = request.values.get('class1', None)
     class2 = request.values.get('class2', None)
     level = int(request.values.get('level', None))
-    mythic_tier = int(request.values.get('mythic_tier', None))
+    mythic_tier = request.values.get('mythic_tier', None)
     exp = int(request.values.get('exp', None))
+
+    if mythic_tier is None or mythic_tier is "":
+        mythic_tier = None
+    else:
+        mythic_tier = int(mythic_tier)
 
     session = Session()
     new_player = models.PlayerModel()
@@ -179,8 +184,13 @@ def edit_player():
     class1 = request.values.get('class1', None)
     class2 = request.values.get('class2', None)
     level = int(request.values.get('level', None))
-    mythic_tier = int(request.values.get('mythic_tier', None))
+    mythic_tier = request.values.get('mythic_tier', None)
     exp = int(request.values.get('exp', None))
+
+    if mythic_tier is None or mythic_tier is "":
+        mythic_tier = None
+    else:
+        mythic_tier = int(mythic_tier)
 
     session = Session()
     player = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign_id)\
@@ -336,10 +346,10 @@ def edit_encounter_action():
     encounter_action_id = int(request.values.get('encounter_action_id', None))
     encounter_id = int(request.values.get('encounter_id', None))
     player_id = int(request.values.get('player_id', None))
-    damage_taken = int(request.values.get('damage_taken', None))
-    damage_done = int(request.values.get('damage_done', None))
+    damage_taken = request.values.get('damage_taken', None)
+    damage_done = request.values.get('damage_done', None)
     # spells_cast = int(request.values.get('spells_cast', None))
-    healing = int(request.values.get('healing', None))
+    healing = request.values.get('healing', None)
 
     if damage_taken is None or damage_taken is "":
         damage_taken = 0
