@@ -222,3 +222,44 @@ body {
 #encounter_totals_table thead tr th {
     border-top: none !important;
 }
+
+#character_adv_table {
+    color: #5B5B5B !important;
+    display: table !important;
+}
+
+#character_adv_table thead tr th {
+    border-top: none !important;
+}
+
+#character_adv_table th, #character_adv_table td {
+    padding: 0.25rem !important;
+}
+
+#exp_tables {
+    margin: 10px auto;
+    color: #5B5B5B !important;
+    max-width: 1800px
+}
+
+#exp_tables a {
+    color: #6D98BA !important;
+}
+
+#character_advancement {
+    min-width: 1000px !important;
+    margin-right: 30px !important;
+}
+
+#exp_awards_table {
+    color: #5B5B5B !important;
+    display: table !important;
+}
+
+#exp_awards_table thead tr th {
+    border-top: none !important;
+}
+
+#exp_awards_table th, #exp_awards_table td {
+    padding: 0.25rem !important;
+}

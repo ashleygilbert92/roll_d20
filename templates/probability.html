@@ -23,7 +23,7 @@
                 </form>
             </div>
             <div class="col-md-4" id="averages_card">
-                <div class="card text-white" id="averages_card2" style="background-color: #88A09E;">
+                <div class="card text-white" id="averages_card2" style="background-color: #90B398;">
                     <div class="card-header">Today D20 Average</div>
                     <div class="card-body">
                         <h4 class="card-title" id="today_average">{{ '%0.2f' % today_average|float }}</h4>
@@ -41,7 +41,7 @@
         </div>
         <div class="row text-center" id="prob_row2">
             <div class="col-md-6" id="probability_card">
-                <form class="form-inline" id="probability_form">
+                <form class="" id="probability_form">
                     <h4 class="text-center">Dice Probabilities</h4>
                     <div class="form-group row">
                         <label class="control-label col-sm-6" for="target">Probability Target:</label>
@@ -49,8 +49,9 @@
                             <input type="text" class="form-control" id="target" name="target" required>
                         </div>
                     </div>
+                    <div class="form-group row">
                     {% for i in [4,6,8,10,12,20,100] %}
-                        <div class="form-group row">
+
                         <label class="control-label col-sm-4" for="{{ i }}">{{ i }}: </label>
                             <div class="col-sm-8">
                                 <select class="form-control" name="dice" id="{{ i }}" required>
@@ -65,8 +66,9 @@
                                 {% endif %}
                                 </select>
                             </div>
-                        </div>
+
                     {% endfor %}
+                    </div>
                     <div class="form-group row text-center">
                         <div class="col">
                             <button type="submit" class="btn btn-success">Submit</button>

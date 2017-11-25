@@ -83,6 +83,7 @@ def add_campaign():
     name = request.values.get('name', None)
     if name is "":
         return 404
+
     session = Session()
     new_campaign = models.CampaignModel()
     new_campaign.user_id = current_user.id
@@ -117,8 +118,9 @@ def add_play_session():
         date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
     except Exception as e:
         return abort(404, message="Invalid Date")
-    session = Session()
     description = request.values.get('description', None)
+
+    session = Session()
     new_play_session = models.PlaySessionModel()
     new_play_session.campaign_id = campaign_id
     new_play_session.date = date
@@ -137,6 +139,7 @@ def add_player():
     level = int(request.values.get('level', None))
     mythic_tier = int(request.values.get('mythic_tier', None))
     exp = int(request.values.get('exp', None))
+
     session = Session()
     new_player = models.PlayerModel()
     new_player.campaign_id = campaign_id
@@ -178,6 +181,7 @@ def edit_player():
     level = int(request.values.get('level', None))
     mythic_tier = int(request.values.get('mythic_tier', None))
     exp = int(request.values.get('exp', None))
+
     session = Session()
     player = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign_id)\
         .filter(models.PlayerModel.id == player_id).one()
@@ -219,10 +223,11 @@ def encounters(session_id):
 @app.route('/add_session_notes/', methods=['GET', 'POST'])
 def session_notes():
     session_id = int(request.values.get('session_id', None))
-    session = Session()
     notes = request.values.get('notes', None)
     r = '<br />'
     notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
+
+    session = Session()
     new_session_note = models.SessionNoteModel()
     new_session_note.session_id = session_id
     new_session_note.notes = notes
@@ -234,9 +239,10 @@ def session_notes():
 @app.route('/add_encounter/', methods=['GET', 'POST'])
 def add_encounter():
     session_id = int(request.values.get('session_id', None))
-    session = Session()
     name = request.values.get('name', None)
     description = request.values.get('description', None)
+
+    session = Session()
     new_encounter = models.EncounterModel()
     new_encounter.session_id = session_id
     new_encounter.name = name
@@ -272,6 +278,100 @@ def encounter_actions(encounter_id):
         return redirect(url_for('login'))
 
 
+@app.route('/add_encounter_action/', methods=['GET', 'POST'])
+def add_encounter_action():
+    encounter_id = int(request.values.get('encounter_id', None))
+    player_id = int(request.values.get('player_id', None))
+    damage_taken = request.values.get('damage_taken', None)
+    damage_done = request.values.get('damage_done', None)
+    # spells_cast = int(request.values.get('spells_cast', None))
+    healing = request.values.get('healing', None)
+
+    if damage_taken is None or damage_taken is "":
+        damage_taken = 0
+    else:
+        damage_taken = int(damage_taken)
+
+    if damage_done is None or damage_done is "":
+        damage_done = 0
+    else:
+        damage_done = int(damage_done)
+
+    if healing is None or healing is "":
+        healing = 0
+    else:
+        healing = int(healing)
+
+    session = Session()
+    new_encounter_action = models.EncounterActionModel()
+    new_encounter_action.encounter_id = encounter_id
+    new_encounter_action.player_id = player_id
+    new_encounter_action.damage_taken = damage_taken
+    new_encounter_action.damage_done = damage_done
+    # new_encounter_action.spells_cast = spells_cast
+    new_encounter_action.healing = healing
+    session.add(new_encounter_action)
+    session.commit()
+    return jsonify({"next": "/encounters/{}/".format(encounter_id)})
+
+
+@app.route('/get_encounter_action/', methods=['GET', 'POST'])
+def get_encounter_action():
+    action_id = int(request.values.get('action_id', None))
+    session = Session()
+    action = session.query(models.EncounterActionModel).get(action_id)
+    return jsonify({"encounter_action": {
+        "id": action.id,
+        "encounter_id": action.encounter_id,
+        "player_id": action.player_id,
+        "damage_taken": action.damage_taken,
+        "damage_done": action.damage_done,
+        # "spells_cast": action.spells_cast,
+        "healing": action.healing
+    }})
+
+
+@app.route('/edit_encounter_action/', methods=['GET', 'PUT'])
+def edit_encounter_action():
+    encounter_action_id = int(request.values.get('encounter_action_id', None))
+    encounter_id = int(request.values.get('encounter_id', None))
+    player_id = int(request.values.get('player_id', None))
+    damage_taken = int(request.values.get('damage_taken', None))
+    damage_done = int(request.values.get('damage_done', None))
+    # spells_cast = int(request.values.get('spells_cast', None))
+    healing = int(request.values.get('healing', None))
+
+    if damage_taken is None or damage_taken is "":
+        damage_taken = 0
+    else:
+        damage_taken = int(damage_taken)
+
+    if damage_done is None or damage_done is "":
+        damage_done = 0
+    else:
+        damage_done = int(damage_done)
+
+    if healing is None or healing is "":
+        healing = 0
+    else:
+        healing = int(healing)
+
+    session = Session()
+    new_edit_encounter_action = session.query(models.EncounterActionModel)\
+        .filter(models.EncounterActionModel.encounter_id == encounter_id)\
+        .filter(models.EncounterActionModel.player_id == player_id)\
+        .filter(models.EncounterActionModel.id == encounter_action_id).one()
+    new_edit_encounter_action.encounter_id = encounter_id
+    new_edit_encounter_action.player_id = player_id
+    new_edit_encounter_action.damage_taken = damage_taken
+    new_edit_encounter_action.damage_done = damage_done
+    # new_edit_encounter_action.spells_cast = spells_cast
+    new_edit_encounter_action.healing = healing
+    session.add(new_edit_encounter_action)
+    session.commit()
+    return jsonify({"next": "/encounters/{}/".format(encounter_id)})
+
+
 @app.route('/exp_calculator/')
 def exp_calculator():
     if current_user.is_authenticated:
@@ -292,12 +392,13 @@ def probability():
 
 @app.route('/add_roll/', methods=['GET', 'POST'])
 def add_roll():
-    session = Session()
     roll = int(request.values.get('roll', None))
     date = datetime.datetime.now().date()
     new_prob = models.ProbabilityModel()
     new_prob.date = date
     new_prob.roll = roll
+
+    session = Session()
     session.add(new_prob)
     session.commit()
     total_average, today_average = calculate_average()
@@ -433,17 +534,17 @@ def dice_probability(dice_list, target):
                 add += (j,)
             product_list.append(add)
 
-    rollAmount = 0
-    targetAmount = 0
+    roll_amount = 0
+    target_amount = 0
     products = product(*product_list)
     for i in products:
-        thisSum = 0
-        rollAmount += 1
+        this_sum = 0
+        roll_amount += 1
         for j in i:
-            thisSum += j
-        if thisSum >= target:
-            targetAmount += 1
-    odds = targetAmount / rollAmount
+            this_sum += j
+        if this_sum >= target:
+            target_amount += 1
+    odds = target_amount / roll_amount
     return odds
 
 
