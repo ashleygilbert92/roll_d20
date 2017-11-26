@@ -7,14 +7,14 @@
         </a>
 
         <div id="encounters" class="text-center">
-            <h2>{{ play_session.date.strftime('%m-%d-%Y') }}</h2>
+            <h2>{{ play_session.date.strftime('%m/%d/%Y') }}</h2>
             <h4>{{ play_session.description }}</h4>
             <br>
             <div class="row" id="play_session_row">
 
                 <div class="col" id="encounters_list">
                     <h4>Encounters:</h4>
-                    <ul class="list-group">
+                    <div class="list-group">
                         {% for encounter in encounters %}
                             <a href="/encounters/{{ encounter.id }}/" class="list-group-item list-group-item-action list-group-item-success">
                                 <h4>{{ encounter.name }}</h4>
@@ -25,16 +25,15 @@
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             <span>&emsp;New Encounter</span>
                         </button>
-                    </ul>
+                    </div>
                 </div>
 
 
                 <div class="col" id="session_notes">
                     <h4>Notes:</h4>
-
-                    <ul class="list-group">
+                    <ul class="list-group text-left">
                         {% for session_note in session_notes %}
-                            <li class="list-group-item list-group-item-success" style="color: #5B5B5B !important;">{{ session_note.notes | safe }}</li>
+                            <button id="{{ session_note.id }}" class="edit_note list-group-item list-group-item-action list-group-item-success">{{ session_note.notes | safe }}</button>
                         {% endfor %}
                         <button id="add_note" data-toggle="modal" data-target="#add_note_modal" class="list-group-item list-group-item-action list-group-item-secondary">
                             <i class="fa fa-plus" aria-hidden="true"></i>
@@ -55,22 +54,50 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
                     <div id="add_note_div">
                         <form id="note_form">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="notes">Notes:</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" id="notes" name="notes" maxlength="65499" required style="min-height: 300px;"></textarea>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="notes">Notes:</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" id="notes" name="notes" maxlength="65499" required style="min-height: 300px;"></textarea>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="submit_note" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="edit_note_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <div class="modal-footer">
-                <button type="button" id="submit_note" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
+                    <div id="edit_note_div">
+                        <form id="edit_note_form">
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="notes2">Notes:</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" id="notes2" name="notes2" maxlength="65499" required style="min-height: 300px;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="submit_edit_note" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
             </div>
           </div>
         </div>
@@ -83,28 +110,28 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
                     <div id="add_encounter_div">
                         <form id="encounter_form">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="name">Encounter Name:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="name">Encounter Name:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="description">Description:</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="description">Description:</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" id="submit_encounter" class="btn btn-success">Submit</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </form>
                     </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="submit_encounter" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
         </div>
@@ -112,7 +139,7 @@
     {% block encounters_scripts %}
         <script>
         $(document).ready(function () {
-            $("#submit_note").click(function (event) {
+            $("#note_form").submit(function (event) {
                 event.preventDefault();
                 var notes = $('#notes').val();
                 $.ajax({
@@ -131,7 +158,49 @@
                     }
                 });
             });
-            $("#submit_encounter").click(function (event) {
+            $('.edit_note').click(function (event) {
+                event.preventDefault();
+                var note_id = this.id;
+                $.ajax({
+                    url: '/get_note/',
+                    data: {
+                        'note_id': note_id
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        var note = response["note"];
+                        $('#edit_note_div').attr("class",note['id']);
+                        $('#notes2').replaceWith("<textarea class='form-control' id='notes2' name='notes2' maxlength='65499' required style='min-height: 300px;'>" + note['notes'] + "</textarea>");
+                        $('#edit_note_modal').modal('show');
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("OOPS! Something weird happened while getting the note.")
+                    }
+                });
+            });
+            $("#edit_note_form").submit(function (event) {
+                event.preventDefault();
+                var note_id = $('#edit_note_div').attr('class');
+                var notes = $('#notes2').val();
+                $.ajax({
+                    url: '/edit_session_notes/',
+                    data: {
+                        'note_id': note_id,
+                        'session_id': {{ play_session.id }},
+                        'notes': notes
+                    },
+                    type: 'PUT',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while editing your note. Make sure you input all fields correctly")
+                    }
+                });
+            });
+            $("#encounter_form").submit(function (event) {
                 event.preventDefault();
                 var name = $('#name').val();
                 var description = $('#description').val();

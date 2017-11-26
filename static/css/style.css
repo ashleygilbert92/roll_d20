@@ -29,11 +29,21 @@ body {
     min-width: 100px !important;
 }
 
+#sign_up_button {
+    min-width: 100px !important;
+}
+
 #logout_button{
     min-width: 100px !important;
 }
 
 #login{
+    margin: 20px auto;
+    max-width: 400px;
+    color: #5B5B5B !important;
+}
+
+#sign_up {
     margin: 20px auto;
     max-width: 400px;
     color: #5B5B5B !important;
@@ -69,12 +79,12 @@ body {
 
 #prob_row1{
     margin: 40px auto;
-    max-width: 1200px;
+    max-width: 1700px;
 }
 
 #prob_row2{
     margin: 100px auto 30px;
-    max-width: 1200px;
+    max-width: 1700px;
 }
 
 #probability_card{
@@ -114,13 +124,13 @@ body {
 }
 
 #feedback_div{
-    margin: 20px auto;
-    max-width: 800px;
+    margin: 20px auto 40px;
+    max-width: 700px;
 }
 
 #player_feedback{
-    margin: 20px auto;
-    max-width: 1500px;
+    margin: 20px auto 40px;
+    max-width: 1700px;
 }
 
 #player_feedback h1{
@@ -166,7 +176,7 @@ body {
 #play_sessions {
     color: #5B5B5B !important;
     margin: 20px auto 40px;
-    max-width: 1000px;
+    max-width: 1200px;
 }
 
 #players_list{
@@ -179,26 +189,15 @@ body {
 
 #encounters {
     color: #5B5B5B !important;
+    margin: 20px auto 40px;
+    max-width: 1700px;
 }
 
 #encounter_actions {
     margin: 20px auto;
     color: #5B5B5B !important;
-    max-width: 1000px;
+    max-width: 1700px;
 }
-
-#session_notes {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 0 0;
-}
-
-#encounters_list {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 0 0;
-}
-
 
 #encounter_action_table {
     color: #5B5B5B !important;
@@ -237,9 +236,9 @@ body {
 }
 
 #exp_tables {
-    margin: 10px auto;
+    margin: 20px auto 40px;
     color: #5B5B5B !important;
-    max-width: 1800px
+    max-width: 1700px;
 }
 
 #exp_tables a {
@@ -262,4 +261,10 @@ body {
 
 #exp_awards_table th, #exp_awards_table td {
     padding: 0.25rem !important;
+}
+
+#logged_out_home {
+    margin: 20px auto 40px;
+    color: #5B5B5B !important;
+    max-width: 1700px;
 }

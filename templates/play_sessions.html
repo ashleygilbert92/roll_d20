@@ -15,7 +15,7 @@
                     <ul class="list-group">
                         {% for play_session in play_sessions %}
                             <a href="/play_sessions/{{ play_session.id }}/" class="list-group-item list-group-item-action list-group-item-success">
-                                <h4>{{ play_session.date.strftime('%m-%d-%Y') }}</h4>
+                                <h4>{{ play_session.date.strftime('%m/%d/%Y') }}</h4>
                                 <h6>{{ play_session.description }}</h6>
                             </a>
                         {% endfor %}
@@ -55,28 +55,28 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
                     <div id="add_session_div">
                         <form id="session_form">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="date">Date:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="date" name="date" placeholder="MM-DD-YYYY" required>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="date">Date:</label>
+                                    <div class="col-sm-8">
+                                        <input type="date" class="form-control" id="date" name="date" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="description">Description:</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="description">Description:</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" id="description" name="description" maxlength="127" required></textarea>
-                                </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="submit_session" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="submit_session" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
         </div>
@@ -89,52 +89,53 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
                     <div id="add_player_div">
                         <form id="add_player_form">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="player_name">Name:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="player_name" name="player_name" required>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="player_name">Name:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="player_name" name="player_name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="class_1">Class 1:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="class_1" name="class_1" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="class_2">Class 2:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="class_2" name="class_2">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="level">Level:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="level" name="level" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="mythic_tier">Mythic Tier:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="mythic_tier" name="mythic_tier">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="exp">EXP:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="exp" name="exp" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="class_1">Class 1:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="class_1" name="class_1" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="class_2">Class 2:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="class_2" name="class_2">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="level">Level:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="level" name="level" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="mythic_tier">Mythic Tier:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="mythic_tier" name="mythic_tier">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="exp">EXP:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="exp" name="exp" required>
-                                </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="submit_player" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="submit_player" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
+
             </div>
           </div>
         </div>
@@ -147,52 +148,52 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
                     <div id="edit_player_div">
                         <form id="edit_player_form">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="player_name2">Name:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="player_name2" name="player_name2" required>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="player_name2">Name:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="player_name2" name="player_name2" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="class_12">Class 1:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="class_12" name="class_12" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="class_22">Class 2:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="class_22" name="class_22">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="level2">Level:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="level2" name="level2" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="mythic_tier2">Mythic Tier:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="mythic_tier2" name="mythic_tier2">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4" for="exp2">EXP:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="exp2" name="exp2" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="class_12">Class 1:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="class_12" name="class_12" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="class_22">Class 2:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="class_22" name="class_22">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="level2">Level:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="level2" name="level2" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="mythic_tier2">Mythic Tier:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="mythic_tier2" name="mythic_tier2">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-4" for="exp2">EXP:</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="exp2" name="exp2" required>
-                                </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="edit_player" class="btn btn-success">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" id="edit_player" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
         </div>
@@ -201,7 +202,7 @@
     {% block play_session_scripts %}
         <script>
         $(document).ready(function () {
-            $("#submit_session").click(function (event) {
+            $("#session_form").submit(function (event) {
                 event.preventDefault();
                 var date = $('#date').val();
                 var description = $('#description').val();
@@ -222,7 +223,7 @@
                     }
                 });
             });
-            $("#submit_player").click(function (event) {
+            $("#add_player_form").submit(function (event) {
                 event.preventDefault();
                 var player_name = $('#player_name').val();
                 var class_1 = $('#class_1').val();
@@ -265,9 +266,9 @@
                         $('#edit_player_div').attr("class",player['id']);
                         $('#player_name2').replaceWith("<input type='text' class='form-control' id='player_name2' name='player_name2' value='" + player['name'] + "' required>");
                         $('#class_12').replaceWith("<input type='text' class='form-control' id='class_12' name='class_12' value='" + player['class1'] + "' required>");
-                        $('#class_22').replaceWith("<input type='text' class='form-control' id='class_22' name='class_22' value='" + player['class2'] + "' required>");
+                        $('#class_22').replaceWith("<input type='text' class='form-control' id='class_22' name='class_22' value='" + player['class2'] + "'>");
                         $('#level2').replaceWith("<input type='text' class='form-control' id='level2' name='level2' value='" + player['level'] + "' required>");
-                        $('#mythic_tier2').replaceWith("<input type='text' class='form-control' id='mythic_tier2' name='mythic_tier2' value='" + player['mythic_tier'] + "' required>");
+                        $('#mythic_tier2').replaceWith("<input type='text' class='form-control' id='mythic_tier2' name='mythic_tier2' value='" + player['mythic_tier'] + "'>");
                         $('#exp2').replaceWith("<input type='text' class='form-control' id='exp2' name='exp2' value='" + player['exp'] + "' required>");
                         $('#edit_player_modal').modal('show');
                     },
@@ -277,7 +278,7 @@
                     }
                 });
             });
-            $("#edit_player").click(function (event) {
+            $("#edit_player_form").submit(function (event) {
                 event.preventDefault();
                 var player_name = $('#player_name2').val();
                 var class_1 = $('#class_12').val();

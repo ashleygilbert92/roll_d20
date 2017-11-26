@@ -1,12 +1,13 @@
+import datetime
+import re
+
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user
-from sqlalchemy.orm import scoped_session
-import datetime
-import sys
 from itertools import product
+from werkzeug.security import generate_password_hash
 
-from db import get_session_factory
 import models
+from db import get_session_factory
 
 app = Flask(__name__)
 app.secret_key = 'v@p2rfNOa2j8Yci'
@@ -44,17 +45,44 @@ def login():
         return render_template('login.html', current_user=current_user)
 
 
+@app.route('/sign_up/')
+def sign_up():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    else:
+        return render_template('sign_up.html', current_user=current_user)
+
+
+@app.route('/add_user/', methods=['GET', 'POST'])
+def add_user():
+    name = request.values.get('full_name', None)
+    username = request.values.get('username', None)
+    regex = re.compile('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    if not regex.match(username):
+        return abort(400)
+    password = generate_password_hash(request.values.get('password'))
+
+    session = Session()
+    new_user = models.UserModel()
+    new_user.name = name
+    new_user.username = username
+    new_user.password = password
+    session.add(new_user)
+    session.commit()
+    login_user(new_user)
+    return jsonify({"next": "/"})
+
+
 @app.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
     session = Session()
     username = request.values.get('username', None)
     users = session.query(models.UserModel).filter(models.UserModel.username == username).all()
     if len(users) > 1:
-        return abort(404)
+        return abort(400)
     user = users[0]
     if user is not None and user.verify_password(request.values.get('password', None)):
         login_user(user)
-        flash('You are now logged in. Welcome back!', 'success')
         return jsonify({"next": "/"})
     else:
         return abort(400)
@@ -63,7 +91,6 @@ def authenticate():
 @app.route('/logout/')
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
 
@@ -75,7 +102,7 @@ def campaigns():
             .filter(models.CampaignModel.user_id == current_user.id).all()
         return render_template('campaigns.html', current_user=current_user, campaigns=campaign_list)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/add_campaign/', methods=['GET', 'POST'])
@@ -108,14 +135,14 @@ def play_sessions(campaign_id):
         return render_template('play_sessions.html', current_user=current_user,
                                play_sessions=play_session_list, campaign=campaign, players=players_list)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/add_play_session/', methods=['GET', 'POST'])
 def add_play_session():
     campaign_id = int(request.values.get('campaign_id', None))
     try:
-        date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
+        date = datetime.datetime.strptime(request.values.get('date', None), '%Y-%m-%d')
     except Exception as e:
         return abort(404, message="Invalid Date")
     description = request.values.get('description', None)
@@ -141,7 +168,7 @@ def add_player():
     exp = int(request.values.get('exp', None))
 
     if mythic_tier is None or mythic_tier is "":
-        mythic_tier = None
+        mythic_tier = 0
     else:
         mythic_tier = int(mythic_tier)
 
@@ -188,7 +215,7 @@ def edit_player():
     exp = int(request.values.get('exp', None))
 
     if mythic_tier is None or mythic_tier is "":
-        mythic_tier = None
+        mythic_tier = 0
     else:
         mythic_tier = int(mythic_tier)
 
@@ -202,7 +229,7 @@ def edit_player():
     player.level = level
     player.mythic_tier = mythic_tier
     player.exp = exp
-    session.add(player)
+    # session.add(player)
     session.commit()
     return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
 
@@ -227,7 +254,7 @@ def encounters(session_id):
         return render_template('encounters.html', current_user=current_user,
                                play_session=play_session, encounters=encounters_list, session_notes=session_notes_list)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/add_session_notes/', methods=['GET', 'POST'])
@@ -235,13 +262,47 @@ def session_notes():
     session_id = int(request.values.get('session_id', None))
     notes = request.values.get('notes', None)
     r = '<br />'
-    notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
+    notes = notes.replace('\n', r)
 
     session = Session()
     new_session_note = models.SessionNoteModel()
     new_session_note.session_id = session_id
     new_session_note.notes = notes
     session.add(new_session_note)
+    session.commit()
+    return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+
+
+@app.route('/get_note/', methods=['GET', 'POST'])
+def get_note():
+    note_id = int(request.values.get('note_id', None))
+    session = Session()
+    note = session.query(models.SessionNoteModel).get(note_id)
+    notes = note.notes
+    r = '\n'
+    notes = notes.replace('<br />', r)
+    return jsonify({"note": {
+        "id": note.id,
+        "session_id": note.session_id,
+        "notes": notes
+    }})
+
+
+@app.route('/edit_session_notes/', methods=['GET', 'PUT'])
+def edit_session_notes():
+    note_id = int(request.values.get('note_id', None))
+    session_id = int(request.values.get('session_id', None))
+    notes = request.values.get('notes', None)
+    r = '<br />'
+    notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
+
+    session = Session()
+    edit_session_note = session.query(models.SessionNoteModel)\
+        .filter(models.SessionNoteModel.session_id == session_id)\
+        .filter(models.SessionNoteModel.id == note_id).one()
+    edit_session_note.session_id = session_id
+    edit_session_note.notes = notes
+    # session.add(edit_session_note)
     session.commit()
     return jsonify({"next": "/play_sessions/{}/".format(session_id)})
 
@@ -285,7 +346,7 @@ def encounter_actions(encounter_id):
         return render_template('encounter_actions.html', current_user=current_user,
                                encounter=encounter, encounter_actions=encounters_actions_list, players=players_list)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/add_encounter_action/', methods=['GET', 'POST'])
@@ -377,7 +438,7 @@ def edit_encounter_action():
     new_edit_encounter_action.damage_done = damage_done
     # new_edit_encounter_action.spells_cast = spells_cast
     new_edit_encounter_action.healing = healing
-    session.add(new_edit_encounter_action)
+    # session.add(new_edit_encounter_action)
     session.commit()
     return jsonify({"next": "/encounters/{}/".format(encounter_id)})
 
@@ -387,7 +448,7 @@ def exp_calculator():
     if current_user.is_authenticated:
         return render_template('exp_calculator.html', current_user=current_user)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/probability/')
@@ -397,7 +458,7 @@ def probability():
         return render_template('probability.html', current_user=current_user, total_average=total_average,
                                today_average=today_average)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/add_roll/', methods=['GET', 'POST'])
@@ -436,7 +497,7 @@ def grid_overlay():
     if current_user.is_authenticated:
         return render_template('grid_overlay.html', current_user=current_user)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/player_feedback/')
@@ -473,7 +534,7 @@ def submit_feedback():
     # campaign_owner = request.values.get('campaign_owner', None)
     player_name = request.values.get('player_name', None)
     try:
-        date = datetime.datetime.strptime(request.values.get('date', None), '%m-%d-%Y')
+        date = datetime.datetime.strptime(request.values.get('date', None), '%Y-%m-%d')
     except Exception as e:
         return abort(400, message="Invalid Date")
     session = Session()
