@@ -9,6 +9,8 @@
       <link href="/static/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
       <link href="/static/fonts/fonts.css" type="text/css" rel="stylesheet">
       <link rel="stylesheet" href="/static/css/font-awesome.css">
+      <link rel="stylesheet" href="/static/css/fileinput.css">
+      <link rel="stylesheet" href="/static/css/fileinput-rtl.css">
   </head>
 {% endblock %}
 {% block body %}
@@ -55,13 +57,18 @@
       </div>
     </nav>
         {% block scripts %}
-        <script src="/static/js/jquery.js"></script>
-        <script src="/static/js/jquery.validator.js"></script>
-        <script src="/static/js/tether.min.js"></script>
-        <script src="/static/js/popper.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
-        <script src="/static/js/bootstrap.bundle.min.js"></script>
-    {% endblock %}
+            <script src="/static/js/jquery.js"></script>
+            <script src="/static/js/jquery.validator.js"></script>
+            <script src="/static/js/tether.min.js"></script>
+            <script src="/static/js/popper.js"></script>
+            <script src="/static/js/bootstrap.min.js"></script>
+            <script src="/static/js/bootstrap.bundle.min.js"></script>
+            <script src="/static/js/plugins/piexif.js"></script>
+            <script src="/static/js/plugins/sortable.js"></script>
+            <script src="/static/js/plugins/purify.js"></script>
+            <script src="/static/js/fileinput.js"></script>
+            <script src="/static/themes/fa/theme.js"></script>
+        {% endblock %}
     </div>
     <div class="card" style="background-color: #C8D3D5" id="content_card">
     {% block content %}

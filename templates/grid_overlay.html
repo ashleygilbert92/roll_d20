@@ -1,42 +1,96 @@
 {% extends 'index.html' %}
 {% block content %}
+    <div id="loading-indicator"><img id="loading-indicator-img" src="/static/images/loading.gif"  alt/></div>
     <div id="content">
         <div id="grid_overlay" class="text-center">
-            <form class="" id="pic_upload_form">
+            <h1>Overlay a Grid Onto a Map</h1>
+            <div class="text-left" id="grid_instructions">
+                <h6>&emsp;Step 1: Click "Browse" and select your image</h6>
+                <h6>&emsp;Step 2: When you see the "Upload" button, click it</h6>
+                <h6>&emsp;Step 3: Select grid size</h6>
+                <h6>&emsp;Step 4: Click "Process Image"</h6>
+                <h6>&emsp;Step 5: Right click on the image and select "Save as"</h6>
+            </div>
+            <form id="pic_upload_form">
                 <div class="form-group row">
-                    <div class="col">
-                        <input type="file" class="" id="grid_file" name="grid_file" required>
+                    <div class="col" id="grid_file_row">
+                        <input id="grid_file" name="grid_file" type="file">
                     </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#grid_file').fileinput({
+                                'uploadUrl': '/upload_file/',
+                                'showPreview': false
+                            });
+                        });
+                    </script>
                 </div>
+    {#                <div class="form-group row text-center">#}
+    {#                    <div class="col">#}
+    {#                        <button type="submit" class="btn btn-success">Submit</button>#}
+    {#                    </div>#}
+    {#                </div>#}
+            </form>
+            <form id="process_image">
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="text-center col-form-legend offset-5 col-1">Grid Size:</legend>
+                        <div class="text-left col-1">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="size" id="sizes" value="small" checked>
+                                    small
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="size" id="sizem" value="medium">
+                                    medium
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="size" id="sizel" value="large">
+                                    large
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
                 <div class="form-group row text-center">
                     <div class="col">
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success">Process Image</button>
                     </div>
                 </div>
             </form>
+            <div id="display_processed_image"></div>
         </div>
     </div>
     {% block grid_overlay_scripts %}
         <script>
         $(document).ready(function () {
-            $("#pic_upload_form").submit(function (event) {
+            $('#loading-indicator').hide();
+            $("#process_image").submit(function (event) {
                 event.preventDefault();
-                var file = $('#grid_file')[0].files[0];
-                var fd = new FormData();
-                fd.append('theFile', file);
+                $('#loading-indicator').show();
+                var size = $('#process_image input:radio:checked').val();
+                var file_name = $('.file-caption-name').attr('title');
                 $.ajax({
-                    url: '/upload_file/',
-                    cache: false,
-                    async: false,
-                    processData: false,
-                    data: fd,
+                    url: '/process_file/',
+                    data: {
+                        'size': size,
+                        'file_name': file_name
+                    },
                     type: 'POST',
                     success: function (response) {
-                        window.location.href = response["next"];
+                         $('#loading-indicator').hide();
+                         $('#display_processed_image').replaceWith("<div id='display_processed_image'><img src='/static/images/grid-" + size + "-" + file_name + "'></div>")
                     },
                     error: function (error) {
+                         $('#loading-indicator').hide();
                         console.log(error);
-                        alert("Something weird happened while uploading your picture. Try Again!")
+                        alert("Something weird happened processing your image. Try Again!")
+                        location.reload();
                     }
                 });
             });

@@ -1,7 +1,6 @@
 import datetime
 import os
 import re
-import sys
 
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user
@@ -585,13 +584,11 @@ def grid_overlay():
 
 @app.route('/upload_file/', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
+    if current_user.is_authenticated:
         # check if the post request has the file part
-        my_request = request.form
-        if 'file' not in request.files:
+        if 'grid_file' not in request.files:
             return abort(404)
-        file = request.files['file']
-        print(file, file=sys.stderr)
+        file = request.files['grid_file']
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
@@ -600,7 +597,19 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return jsonify({"filename": filename})
-    return ""
+    else:
+        return abort(401)
+
+
+@app.route('/process_file/', methods=['GET', 'POST'])
+def process_file():
+    if current_user.is_authenticated:
+        size = request.values.get('size', None)
+        file_name = request.values.get('file_name', None)
+        overlay_image(size, file_name)
+        return jsonify(success=True)
+    else:
+        return abort(401)
 
 
 @app.route('/player_feedback/')
@@ -740,7 +749,7 @@ def overlay_image(size, image_name):
     for i in range(0, yint + 1):
         draw.line((0, 0+(i * offset), image.size[0], 0+(i * offset)), fill=128)
 
-    image.save("{}/static/images/new-{}".format(dir_path, image_name))
+    image.save("{}/static/images/grid-{}-{}".format(dir_path, size, image_name))
 
 
 def allowed_file(filename):

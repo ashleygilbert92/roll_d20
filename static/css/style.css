@@ -342,3 +342,26 @@ body {
     max-width: 1700px;
 }
 
+#grid_file_row {
+    margin: 0 auto;
+    max-width: 500px;
+}
+
+.file-preview {
+    max-height: 400px !important;
+}
+
+.file-drop-zone {
+    max-height: 300px !important;
+}
+
+#display_processed_image img {
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+#grid_instructions {
+    margin: 20px auto 40px;
+    max-width: 400px;
+
+}
