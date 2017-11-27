@@ -79,12 +79,12 @@ body {
 
 #prob_row1{
     margin: 40px auto;
-    max-width: 1700px;
+    max-width: 1300px;
 }
 
 #prob_row2{
     margin: 100px auto 30px;
-    max-width: 1700px;
+    max-width: 1300px;
 }
 
 #probability_card{
@@ -268,3 +268,31 @@ body {
     color: #5B5B5B !important;
     max-width: 1700px;
 }
+
+#logged_out_pics {
+    margin: 0 auto;
+    max-width: 700px;
+    /*position: absolute;*/
+    transform: translate(0, -30%)
+}
+
+#carousel_logged_out_home {
+    margin: 0 auto;
+    /*padding: 40px;*/
+    background-color: #6D98BA;
+    max-width: 1200px;
+    min-height: 600px;
+}
+
+#logged_out_inner {
+    max-height: 700px;
+}
+
+#logged_out_div {
+    margin-top: 15%;
+}
+
+/*#logged_out_home_buttons {*/
+    /*margin: 0 auto;*/
+    /*max-width: 600px;*/
+/*}*/

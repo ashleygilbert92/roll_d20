@@ -107,17 +107,20 @@ def campaigns():
 
 @app.route('/add_campaign/', methods=['GET', 'POST'])
 def add_campaign():
-    name = request.values.get('name', None)
-    if name is "":
-        return 404
+    if current_user.is_authenticated:
+        name = request.values.get('name', None)
+        if name is "":
+            return abort(404)
 
-    session = Session()
-    new_campaign = models.CampaignModel()
-    new_campaign.user_id = current_user.id
-    new_campaign.name = name
-    session.add(new_campaign)
-    session.commit()
-    return jsonify({"next": "/campaigns/{}/".format(new_campaign.id)})
+        session = Session()
+        new_campaign = models.CampaignModel()
+        new_campaign.user_id = current_user.id
+        new_campaign.name = name
+        session.add(new_campaign)
+        session.commit()
+        return jsonify({"next": "/campaigns/{}/".format(new_campaign.id)})
+    else:
+        return abort(401)
 
 
 @app.route('/campaigns/<campaign_id>/')
@@ -140,98 +143,110 @@ def play_sessions(campaign_id):
 
 @app.route('/add_play_session/', methods=['GET', 'POST'])
 def add_play_session():
-    campaign_id = int(request.values.get('campaign_id', None))
-    try:
-        date = datetime.datetime.strptime(request.values.get('date', None), '%Y-%m-%d')
-    except Exception as e:
-        return abort(404, message="Invalid Date")
-    description = request.values.get('description', None)
+    if current_user.is_authenticated:
+        campaign_id = int(request.values.get('campaign_id', None))
+        try:
+            date = datetime.datetime.strptime(request.values.get('date', None), '%Y-%m-%d')
+        except Exception as e:
+            return abort(404, message="Invalid Date")
+        description = request.values.get('description', None)
 
-    session = Session()
-    new_play_session = models.PlaySessionModel()
-    new_play_session.campaign_id = campaign_id
-    new_play_session.date = date
-    new_play_session.description = description
-    session.add(new_play_session)
-    session.commit()
-    return jsonify({"next": "/play_sessions/{}/".format(new_play_session.id)})
+        session = Session()
+        new_play_session = models.PlaySessionModel()
+        new_play_session.campaign_id = campaign_id
+        new_play_session.date = date
+        new_play_session.description = description
+        session.add(new_play_session)
+        session.commit()
+        return jsonify({"next": "/play_sessions/{}/".format(new_play_session.id)})
+    else:
+        return abort(401)
 
 
 @app.route('/add_player/', methods=['GET', 'POST'])
 def add_player():
-    campaign_id = int(request.values.get('campaign_id', None))
-    name = request.values.get('name', None)
-    class1 = request.values.get('class1', None)
-    class2 = request.values.get('class2', None)
-    level = int(request.values.get('level', None))
-    mythic_tier = request.values.get('mythic_tier', None)
-    exp = int(request.values.get('exp', None))
+    if current_user.is_authenticated:
+        campaign_id = int(request.values.get('campaign_id', None))
+        name = request.values.get('name', None)
+        class1 = request.values.get('class1', None)
+        class2 = request.values.get('class2', None)
+        level = int(request.values.get('level', None))
+        mythic_tier = request.values.get('mythic_tier', None)
+        exp = int(request.values.get('exp', None))
 
-    if mythic_tier is None or mythic_tier is "":
-        mythic_tier = 0
+        if mythic_tier is None or mythic_tier is "":
+            mythic_tier = 0
+        else:
+            mythic_tier = int(mythic_tier)
+
+        session = Session()
+        new_player = models.PlayerModel()
+        new_player.campaign_id = campaign_id
+        new_player.name = name
+        new_player.class1 = class1
+        new_player.class2 = class2
+        new_player.level = level
+        new_player.mythic_tier = mythic_tier
+        new_player.exp = exp
+        session.add(new_player)
+        session.commit()
+        return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
     else:
-        mythic_tier = int(mythic_tier)
-
-    session = Session()
-    new_player = models.PlayerModel()
-    new_player.campaign_id = campaign_id
-    new_player.name = name
-    new_player.class1 = class1
-    new_player.class2 = class2
-    new_player.level = level
-    new_player.mythic_tier = mythic_tier
-    new_player.exp = exp
-    session.add(new_player)
-    session.commit()
-    return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
+        return abort(401)
 
 
 @app.route('/get_player/', methods=['GET', 'POST'])
 def get_player():
-    player_id = int(request.values.get('player_id', None))
-    session = Session()
-    player = session.query(models.PlayerModel).get(player_id)
-    return jsonify({"player": {
-        "id": player.id,
-        "campaign_id": player.campaign_id,
-        "name": player.name,
-        "class1": player.class1,
-        "class2": player.class2,
-        "level": player.level,
-        "mythic_tier": player.mythic_tier,
-        "exp": player.exp
-    }})
+    if current_user.is_authenticated:
+        player_id = int(request.values.get('player_id', None))
+        session = Session()
+        player = session.query(models.PlayerModel).get(player_id)
+        return jsonify({"player": {
+            "id": player.id,
+            "campaign_id": player.campaign_id,
+            "name": player.name,
+            "class1": player.class1,
+            "class2": player.class2,
+            "level": player.level,
+            "mythic_tier": player.mythic_tier,
+            "exp": player.exp
+        }})
+    else:
+        return abort(401)
 
 
 @app.route('/edit_player/', methods=['GET', 'PUT'])
 def edit_player():
-    campaign_id = int(request.values.get('campaign_id', None))
-    player_id = int(request.values.get('player_id', None))
-    name = request.values.get('name', None)
-    class1 = request.values.get('class1', None)
-    class2 = request.values.get('class2', None)
-    level = int(request.values.get('level', None))
-    mythic_tier = request.values.get('mythic_tier', None)
-    exp = int(request.values.get('exp', None))
+    if current_user.is_authenticated:
+        campaign_id = int(request.values.get('campaign_id', None))
+        player_id = int(request.values.get('player_id', None))
+        name = request.values.get('name', None)
+        class1 = request.values.get('class1', None)
+        class2 = request.values.get('class2', None)
+        level = int(request.values.get('level', None))
+        mythic_tier = request.values.get('mythic_tier', None)
+        exp = int(request.values.get('exp', None))
 
-    if mythic_tier is None or mythic_tier is "":
-        mythic_tier = 0
+        if mythic_tier is None or mythic_tier is "":
+            mythic_tier = 0
+        else:
+            mythic_tier = int(mythic_tier)
+
+        session = Session()
+        player = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign_id)\
+            .filter(models.PlayerModel.id == player_id).one()
+        player.campaign_id = campaign_id
+        player.name = name
+        player.class1 = class1
+        player.class2 = class2
+        player.level = level
+        player.mythic_tier = mythic_tier
+        player.exp = exp
+        # session.add(player)
+        session.commit()
+        return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
     else:
-        mythic_tier = int(mythic_tier)
-
-    session = Session()
-    player = session.query(models.PlayerModel).filter(models.PlayerModel.campaign_id == campaign_id)\
-        .filter(models.PlayerModel.id == player_id).one()
-    player.campaign_id = campaign_id
-    player.name = name
-    player.class1 = class1
-    player.class2 = class2
-    player.level = level
-    player.mythic_tier = mythic_tier
-    player.exp = exp
-    # session.add(player)
-    session.commit()
-    return jsonify({"next": "/campaigns/{}/".format(campaign_id)})
+        return abort(401)
 
 
 @app.route('/play_sessions/<session_id>/')
@@ -259,68 +274,80 @@ def encounters(session_id):
 
 @app.route('/add_session_notes/', methods=['GET', 'POST'])
 def session_notes():
-    session_id = int(request.values.get('session_id', None))
-    notes = request.values.get('notes', None)
-    r = '<br />'
-    notes = notes.replace('\n', r)
+    if current_user.is_authenticated:
+        session_id = int(request.values.get('session_id', None))
+        notes = request.values.get('notes', None)
+        r = '<br />'
+        notes = notes.replace('\n', r)
 
-    session = Session()
-    new_session_note = models.SessionNoteModel()
-    new_session_note.session_id = session_id
-    new_session_note.notes = notes
-    session.add(new_session_note)
-    session.commit()
-    return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+        session = Session()
+        new_session_note = models.SessionNoteModel()
+        new_session_note.session_id = session_id
+        new_session_note.notes = notes
+        session.add(new_session_note)
+        session.commit()
+        return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+    else:
+        return abort(401)
 
 
 @app.route('/get_note/', methods=['GET', 'POST'])
 def get_note():
-    note_id = int(request.values.get('note_id', None))
-    session = Session()
-    note = session.query(models.SessionNoteModel).get(note_id)
-    notes = note.notes
-    r = '\n'
-    notes = notes.replace('<br />', r)
-    return jsonify({"note": {
-        "id": note.id,
-        "session_id": note.session_id,
-        "notes": notes
-    }})
+    if current_user.is_authenticated:
+        note_id = int(request.values.get('note_id', None))
+        session = Session()
+        note = session.query(models.SessionNoteModel).get(note_id)
+        notes = note.notes
+        r = '\n'
+        notes = notes.replace('<br />', r)
+        return jsonify({"note": {
+            "id": note.id,
+            "session_id": note.session_id,
+            "notes": notes
+        }})
+    else:
+        return abort(401)
 
 
 @app.route('/edit_session_notes/', methods=['GET', 'PUT'])
 def edit_session_notes():
-    note_id = int(request.values.get('note_id', None))
-    session_id = int(request.values.get('session_id', None))
-    notes = request.values.get('notes', None)
-    r = '<br />'
-    notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
+    if current_user.is_authenticated:
+        note_id = int(request.values.get('note_id', None))
+        session_id = int(request.values.get('session_id', None))
+        notes = request.values.get('notes', None)
+        r = '<br />'
+        notes = notes.replace('\r\n', r).replace('\n\r', r).replace('\r', r).replace('\n', r)
 
-    session = Session()
-    edit_session_note = session.query(models.SessionNoteModel)\
-        .filter(models.SessionNoteModel.session_id == session_id)\
-        .filter(models.SessionNoteModel.id == note_id).one()
-    edit_session_note.session_id = session_id
-    edit_session_note.notes = notes
-    # session.add(edit_session_note)
-    session.commit()
-    return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+        session = Session()
+        edit_session_note = session.query(models.SessionNoteModel)\
+            .filter(models.SessionNoteModel.session_id == session_id)\
+            .filter(models.SessionNoteModel.id == note_id).one()
+        edit_session_note.session_id = session_id
+        edit_session_note.notes = notes
+        # session.add(edit_session_note)
+        session.commit()
+        return jsonify({"next": "/play_sessions/{}/".format(session_id)})
+    else:
+        return abort(401)
 
 
 @app.route('/add_encounter/', methods=['GET', 'POST'])
 def add_encounter():
-    session_id = int(request.values.get('session_id', None))
-    name = request.values.get('name', None)
-    description = request.values.get('description', None)
+    if current_user.is_authenticated:
+        session_id = int(request.values.get('session_id', None))
+        name = request.values.get('name', None)
+        description = request.values.get('description', None)
 
-    session = Session()
-    new_encounter = models.EncounterModel()
-    new_encounter.session_id = session_id
-    new_encounter.name = name
-    new_encounter.description = description
-    session.add(new_encounter)
-    session.commit()
-    return jsonify({"next": "/encounters/{}/".format(new_encounter.id)})
+        session = Session()
+        new_encounter = models.EncounterModel()
+        new_encounter.session_id = session_id
+        new_encounter.name = name
+        new_encounter.description = description
+        session.add(new_encounter)
+        session.commit()
+        return jsonify({"next": "/encounters/{}/".format(new_encounter.id)})
+    else:
+        return abort(401)
 
 
 @app.route('/encounters/<encounter_id>/')
@@ -351,96 +378,105 @@ def encounter_actions(encounter_id):
 
 @app.route('/add_encounter_action/', methods=['GET', 'POST'])
 def add_encounter_action():
-    encounter_id = int(request.values.get('encounter_id', None))
-    player_id = int(request.values.get('player_id', None))
-    damage_taken = request.values.get('damage_taken', None)
-    damage_done = request.values.get('damage_done', None)
-    # spells_cast = int(request.values.get('spells_cast', None))
-    healing = request.values.get('healing', None)
+    if current_user.is_authenticated:
+        encounter_id = int(request.values.get('encounter_id', None))
+        player_id = int(request.values.get('player_id', None))
+        damage_taken = request.values.get('damage_taken', None)
+        damage_done = request.values.get('damage_done', None)
+        # spells_cast = int(request.values.get('spells_cast', None))
+        healing = request.values.get('healing', None)
 
-    if damage_taken is None or damage_taken is "":
-        damage_taken = 0
+        if damage_taken is None or damage_taken is "":
+            damage_taken = 0
+        else:
+            damage_taken = int(damage_taken)
+
+        if damage_done is None or damage_done is "":
+            damage_done = 0
+        else:
+            damage_done = int(damage_done)
+
+        if healing is None or healing is "":
+            healing = 0
+        else:
+            healing = int(healing)
+
+        session = Session()
+        new_encounter_action = models.EncounterActionModel()
+        new_encounter_action.encounter_id = encounter_id
+        new_encounter_action.player_id = player_id
+        new_encounter_action.damage_taken = damage_taken
+        new_encounter_action.damage_done = damage_done
+        # new_encounter_action.spells_cast = spells_cast
+        new_encounter_action.healing = healing
+        session.add(new_encounter_action)
+        session.commit()
+        return jsonify({"next": "/encounters/{}/".format(encounter_id)})
     else:
-        damage_taken = int(damage_taken)
-
-    if damage_done is None or damage_done is "":
-        damage_done = 0
-    else:
-        damage_done = int(damage_done)
-
-    if healing is None or healing is "":
-        healing = 0
-    else:
-        healing = int(healing)
-
-    session = Session()
-    new_encounter_action = models.EncounterActionModel()
-    new_encounter_action.encounter_id = encounter_id
-    new_encounter_action.player_id = player_id
-    new_encounter_action.damage_taken = damage_taken
-    new_encounter_action.damage_done = damage_done
-    # new_encounter_action.spells_cast = spells_cast
-    new_encounter_action.healing = healing
-    session.add(new_encounter_action)
-    session.commit()
-    return jsonify({"next": "/encounters/{}/".format(encounter_id)})
+        return abort(401)
 
 
 @app.route('/get_encounter_action/', methods=['GET', 'POST'])
 def get_encounter_action():
-    action_id = int(request.values.get('action_id', None))
-    session = Session()
-    action = session.query(models.EncounterActionModel).get(action_id)
-    return jsonify({"encounter_action": {
-        "id": action.id,
-        "encounter_id": action.encounter_id,
-        "player_id": action.player_id,
-        "damage_taken": action.damage_taken,
-        "damage_done": action.damage_done,
-        # "spells_cast": action.spells_cast,
-        "healing": action.healing
-    }})
+    if current_user.is_authenticated:
+        action_id = int(request.values.get('action_id', None))
+        session = Session()
+        action = session.query(models.EncounterActionModel).get(action_id)
+        return jsonify({"encounter_action": {
+            "id": action.id,
+            "encounter_id": action.encounter_id,
+            "player_id": action.player_id,
+            "damage_taken": action.damage_taken,
+            "damage_done": action.damage_done,
+            # "spells_cast": action.spells_cast,
+            "healing": action.healing
+        }})
+    else:
+        return abort(401)
 
 
 @app.route('/edit_encounter_action/', methods=['GET', 'PUT'])
 def edit_encounter_action():
-    encounter_action_id = int(request.values.get('encounter_action_id', None))
-    encounter_id = int(request.values.get('encounter_id', None))
-    player_id = int(request.values.get('player_id', None))
-    damage_taken = request.values.get('damage_taken', None)
-    damage_done = request.values.get('damage_done', None)
-    # spells_cast = int(request.values.get('spells_cast', None))
-    healing = request.values.get('healing', None)
+    if current_user.is_authenticated:
+        encounter_action_id = int(request.values.get('encounter_action_id', None))
+        encounter_id = int(request.values.get('encounter_id', None))
+        player_id = int(request.values.get('player_id', None))
+        damage_taken = request.values.get('damage_taken', None)
+        damage_done = request.values.get('damage_done', None)
+        # spells_cast = int(request.values.get('spells_cast', None))
+        healing = request.values.get('healing', None)
 
-    if damage_taken is None or damage_taken is "":
-        damage_taken = 0
+        if damage_taken is None or damage_taken is "":
+            damage_taken = 0
+        else:
+            damage_taken = int(damage_taken)
+
+        if damage_done is None or damage_done is "":
+            damage_done = 0
+        else:
+            damage_done = int(damage_done)
+
+        if healing is None or healing is "":
+            healing = 0
+        else:
+            healing = int(healing)
+
+        session = Session()
+        new_edit_encounter_action = session.query(models.EncounterActionModel)\
+            .filter(models.EncounterActionModel.encounter_id == encounter_id)\
+            .filter(models.EncounterActionModel.player_id == player_id)\
+            .filter(models.EncounterActionModel.id == encounter_action_id).one()
+        new_edit_encounter_action.encounter_id = encounter_id
+        new_edit_encounter_action.player_id = player_id
+        new_edit_encounter_action.damage_taken = damage_taken
+        new_edit_encounter_action.damage_done = damage_done
+        # new_edit_encounter_action.spells_cast = spells_cast
+        new_edit_encounter_action.healing = healing
+        # session.add(new_edit_encounter_action)
+        session.commit()
+        return jsonify({"next": "/encounters/{}/".format(encounter_id)})
     else:
-        damage_taken = int(damage_taken)
-
-    if damage_done is None or damage_done is "":
-        damage_done = 0
-    else:
-        damage_done = int(damage_done)
-
-    if healing is None or healing is "":
-        healing = 0
-    else:
-        healing = int(healing)
-
-    session = Session()
-    new_edit_encounter_action = session.query(models.EncounterActionModel)\
-        .filter(models.EncounterActionModel.encounter_id == encounter_id)\
-        .filter(models.EncounterActionModel.player_id == player_id)\
-        .filter(models.EncounterActionModel.id == encounter_action_id).one()
-    new_edit_encounter_action.encounter_id = encounter_id
-    new_edit_encounter_action.player_id = player_id
-    new_edit_encounter_action.damage_taken = damage_taken
-    new_edit_encounter_action.damage_done = damage_done
-    # new_edit_encounter_action.spells_cast = spells_cast
-    new_edit_encounter_action.healing = healing
-    # session.add(new_edit_encounter_action)
-    session.commit()
-    return jsonify({"next": "/encounters/{}/".format(encounter_id)})
+        return abort(401)
 
 
 @app.route('/exp_calculator/')
@@ -463,33 +499,39 @@ def probability():
 
 @app.route('/add_roll/', methods=['GET', 'POST'])
 def add_roll():
-    roll = int(request.values.get('roll', None))
-    date = datetime.datetime.now().date()
-    new_prob = models.ProbabilityModel()
-    new_prob.date = date
-    new_prob.roll = roll
+    if current_user.is_authenticated:
+        roll = int(request.values.get('roll', None))
+        date = datetime.datetime.now().date()
+        new_prob = models.ProbabilityModel()
+        new_prob.date = date
+        new_prob.roll = roll
 
-    session = Session()
-    session.add(new_prob)
-    session.commit()
-    total_average, today_average = calculate_average()
-    return jsonify({'total_average': total_average, 'today_average': today_average})
+        session = Session()
+        session.add(new_prob)
+        session.commit()
+        total_average, today_average = calculate_average()
+        return jsonify({'total_average': total_average, 'today_average': today_average})
+    else:
+        return abort(401)
 
 
 @app.route('/calculate_probability/', methods=['GET', 'POST'])
 def calculate_probability():
-    dice = dict()
-    dice['four'] = request.values.get('4', None)
-    dice['six'] = request.values.get('6', None)
-    dice['eight'] = request.values.get('8', None)
-    dice['ten'] = request.values.get('10', None)
-    dice['twelve'] = request.values.get('12', None)
-    dice['twenty'] = request.values.get('20', None)
-    dice['one_hundred'] = request.values.get('100', None)
-    target = int(request.values.get('target', None))
-    odds = dice_probability(dice_list=dice, target=target)
-    odds = odds * 100
-    return jsonify({'probability': odds})
+    if current_user.is_authenticated:
+        dice = dict()
+        dice['four'] = request.values.get('4', None)
+        dice['six'] = request.values.get('6', None)
+        dice['eight'] = request.values.get('8', None)
+        dice['ten'] = request.values.get('10', None)
+        dice['twelve'] = request.values.get('12', None)
+        dice['twenty'] = request.values.get('20', None)
+        dice['one_hundred'] = request.values.get('100', None)
+        target = int(request.values.get('target', None))
+        odds = dice_probability(dice_list=dice, target=target)
+        odds = odds * 100
+        return jsonify({'probability': odds})
+    else:
+        return abort(401)
 
 
 @app.route('/grid_overlay/')
@@ -502,7 +544,6 @@ def grid_overlay():
 
 @app.route('/player_feedback/')
 def player_feedback():
-
     if current_user.is_authenticated:
         session = Session()
         campaign_list = session.query(models.CampaignModel).\
