@@ -57,3 +57,12 @@ page that contains notes and a list of encounters really needs fixed in that are
 DM dashboard and that basically turned into the Campaign management section. I want to have a home page for logged in users that just
 shows some cool stats or an overview of some kind. We'll see if I get to that. I hope so. The styling on the Probability page needs fixed too.
 I'm getting somewhere but I've still got a long way to go.
+
+
+## Checkpoint 4:
+November 27th: I was able to finish everything that I didn't get done from last time. I was also able to finish basically 
+everything that I wanted to get done in checkpoint 4. All of the requirements were met. I think the only thing that I really 
+had to modify was the notifications -- I had no where to pull the data for those from so  instead I put an amazon products 
+banner that shows products for pathfinder. I had to sign up for an Amazon Affiliates account to be able to get the banner but
+I think it's awesome. The only page I'd really like to redo is the Probability page. I don't like the layout at all but
+otherwise I think everything looks great!
