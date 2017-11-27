@@ -606,8 +606,9 @@ def process_file():
     if current_user.is_authenticated:
         size = request.values.get('size', None)
         file_name = request.values.get('file_name', None)
+        file_name = file_name.replace(" ", "_")
         overlay_image(size, file_name)
-        return jsonify(success=True)
+        return jsonify({"filename": file_name})
     else:
         return abort(401)
 

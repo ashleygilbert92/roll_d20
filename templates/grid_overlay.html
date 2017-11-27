@@ -84,7 +84,7 @@
                     type: 'POST',
                     success: function (response) {
                          $('#loading-indicator').hide();
-                         $('#display_processed_image').replaceWith("<div id='display_processed_image'><img src='/static/images/grid-" + size + "-" + file_name + "'></div>")
+                         $('#display_processed_image').replaceWith("<div id='display_processed_image'><img src='/static/images/grid-" + size + "-" + response['filename'] + "'></div>")
                     },
                     error: function (error) {
                          $('#loading-indicator').hide();
