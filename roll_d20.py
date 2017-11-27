@@ -1,15 +1,24 @@
 import datetime
+import os
 import re
+import sys
 
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user
 from itertools import product
+from PIL import Image, ImageDraw
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 
 import models
 from db import get_session_factory
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+UPLOAD_FOLDER = '{}/static/images'.format(dir_path)
+ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'tiff', 'tif']
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'v@p2rfNOa2j8Yci'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -574,6 +583,26 @@ def grid_overlay():
         return redirect(url_for('sign_up'))
 
 
+@app.route('/upload_file/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        my_request = request.form
+        if 'file' not in request.files:
+            return abort(404)
+        file = request.files['file']
+        print(file, file=sys.stderr)
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            return abort(404)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return jsonify({"filename": filename})
+    return ""
+
+
 @app.route('/player_feedback/')
 def player_feedback():
     if current_user.is_authenticated:
@@ -690,6 +719,33 @@ def dice_probability(dice_list, target):
             target_amount += 1
     odds = target_amount / roll_amount
     return odds
+
+
+def overlay_image(size, image_name):
+    offset = 0
+    if size == "small":
+        offset = 15
+    if size == "medium":
+        offset = 30
+    if size == "large":
+        offset = 50
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    image = Image.open("{}/static/images/{}".format(dir_path, image_name))
+    draw = ImageDraw.Draw(image)
+    xint = int(image.size[0]/offset)
+    yint = int(image.size[1]/offset)
+    for i in range(0, xint + 1):
+        draw.line((0+(i * offset), 0, 0+(i * offset), image.size[1]), fill=128)
+    for i in range(0, yint + 1):
+        draw.line((0, 0+(i * offset), image.size[0], 0+(i * offset)), fill=128)
+
+    image.save("{}/static/images/new-{}".format(dir_path, image_name))
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 if __name__ == '__main__':

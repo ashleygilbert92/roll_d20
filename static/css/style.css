@@ -336,3 +336,9 @@ body {
     margin-top: 20px;
 }
 
+#grid_overlay {
+    color: #5B5B5B !important;
+    margin: 20px auto 40px;
+    max-width: 1700px;
+}
+

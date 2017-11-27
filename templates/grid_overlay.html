@@ -1,4 +1,46 @@
 {% extends 'index.html' %}
 {% block content %}
-    Grid overlay
+    <div id="content">
+        <div id="grid_overlay" class="text-center">
+            <form class="" id="pic_upload_form">
+                <div class="form-group row">
+                    <div class="col">
+                        <input type="file" class="" id="grid_file" name="grid_file" required>
+                    </div>
+                </div>
+                <div class="form-group row text-center">
+                    <div class="col">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% block grid_overlay_scripts %}
+        <script>
+        $(document).ready(function () {
+            $("#pic_upload_form").submit(function (event) {
+                event.preventDefault();
+                var file = $('#grid_file')[0].files[0];
+                var fd = new FormData();
+                fd.append('theFile', file);
+                $.ajax({
+                    url: '/upload_file/',
+                    cache: false,
+                    async: false,
+                    processData: false,
+                    data: fd,
+                    type: 'POST',
+                    success: function (response) {
+                        window.location.href = response["next"];
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Something weird happened while uploading your picture. Try Again!")
+                    }
+                });
+            });
+        });
+        </script>
+    {% endblock %}
 {% endblock %}

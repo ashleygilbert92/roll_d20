@@ -2,3 +2,5 @@ Flask==0.12.2
 flask-login==0.4.0
 sqlalchemy==1.1.14
 PyMySQL==0.7.11
+Pillow=4.3.0
+matplotlib=2.1.0
