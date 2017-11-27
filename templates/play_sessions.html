@@ -26,7 +26,7 @@
                     </ul>
                 </div>
                 <div class="col" id="players_list">
-                    <h4>Players:</h4>
+                    <h4>Characters:</h4>
                     <ul class="list-group">
                         {% for player in players %}
                             <button id="{{ player.id }}" class="edit_player list-group-item list-group-item-action list-group-item-success">
@@ -40,7 +40,7 @@
                         {% endfor %}
                         <button id="add_player" data-toggle="modal" data-target="#add_player_modal" class="list-group-item list-group-item-action list-group-item-secondary">
                             <i class="fa fa-plus" aria-hidden="true"></i>
-                            <span>&emsp;New Player</span>
+                            <span>&emsp;New Character</span>
                         </button>
                     </ul>
                 </div>
@@ -84,7 +84,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Player</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add New Character</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -143,7 +143,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Player</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Character</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>

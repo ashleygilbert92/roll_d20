@@ -30,9 +30,8 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    #TODO create logged in home page
     if current_user.is_authenticated:
-        return redirect(url_for('campaigns'))
+        return redirect(url_for('dashboard'))
     else:
         return render_template('home.html', current_user=current_user)
 
@@ -40,7 +39,7 @@ def home():
 @app.route('/login/')
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
     else:
         return render_template('login.html', current_user=current_user)
 
@@ -92,6 +91,39 @@ def authenticate():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+@app.route('/dashboard/')
+def dashboard():
+    if current_user.is_authenticated:
+        total_average, today_average = calculate_average()
+        session = Session()
+        all_campaigns = session.query(models.CampaignModel)\
+            .filter(models.CampaignModel.user_id == current_user.id).all()
+        num_campaigns = len(all_campaigns)
+        character_count = 0
+        highest_damage = 0
+        for campaign in all_campaigns:
+            all_players = session.query(models.PlayerModel)\
+                .filter(models.PlayerModel.campaign_id == campaign.id).all()
+            character_count += len(all_players)
+            all_play_sessions = session.query(models.PlaySessionModel)\
+                .filter(models.PlaySessionModel.campaign_id == campaign.id).all()
+            for play_session in all_play_sessions:
+                all_encounters = session.query(models.EncounterModel)\
+                    .filter(models.EncounterModel.session_id == play_session.id).all()
+                for encounter in all_encounters:
+                    all_actions = session.query(models.EncounterActionModel)\
+                        .filter(models.EncounterActionModel.encounter_id == encounter.id).all()
+                    for action in all_actions:
+                        if action.damage_done >= highest_damage:
+                            highest_damage = action.damage_done
+
+        return render_template('dashboard.html', current_user=current_user, total_average=total_average,
+                               num_campaigns=num_campaigns, character_count=character_count,
+                               highest_damage=highest_damage)
+    else:
+        return redirect(url_for('sign_up'))
 
 
 @app.route('/campaigns/')

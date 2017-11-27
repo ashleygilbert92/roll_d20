@@ -1,0 +1,74 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div id="content">
+        <div id="dashboard" class="text-center">
+            <h1 class="display-4">My Dashboard</h1>
+            <hr>
+            <div class="row" id="management_buttons">
+                <div class="offset-3 col-3">
+                    <a role="button" class="col btn btn-lg btn-outline-success" href="/campaigns/">Manage My Campaigns</a>
+                </div>
+                <div class="col-3">
+                    <a role="button" class="col btn btn-lg btn-outline-success" href="/player_feedback/">View Player Feedback</a>
+                </div>
+            </div>
+            <div class="row text-center" id="stats_cards1">
+                <div class="col-3 offset-3">
+                    <div class="card text-white" id="campaigns_card" style="background-color: #6D98BA;">
+                        <div class="card-header">Total Campaigns Created</div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="">{{ num_campaigns }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card text-white" id="dash_card" style="background-color: #A37F91;">
+                        <div class="card-header">Average D20 Roll</div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="">{{ '%0.2f' % total_average|float }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center" id="stats_cards2">
+                <div class="col-3 offset-3">
+                    <div class="card text-white" id="campaigns_card" style="background-color: #CEA05D;">
+                        <div class="card-header">Total Characters Created</div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="">{{ character_count }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card text-white" id="dash_card" style="background-color: #90B398;">
+                        <div class="card-header">Highest Damage Dealt</div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="">{{ highest_damage }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div id="amazon_script" class="col text-center">
+                    <script type="text/javascript">
+                        amzn_assoc_placement = "adunit0";
+                        amzn_assoc_search_bar = "false";
+                        amzn_assoc_tracking_id = "rolld20-20";
+                        amzn_assoc_ad_mode = "search";
+                        amzn_assoc_ad_type = "smart";
+                        amzn_assoc_marketplace = "amazon";
+                        amzn_assoc_region = "US";
+                        amzn_assoc_title = "Pathfinder Products";
+                        amzn_assoc_default_search_phrase = "Pathfinder";
+                        amzn_assoc_default_category = "All";
+                        amzn_assoc_linkid = "d9d397a3228d8d60a541387944c67d4e";
+                        amzn_assoc_rows="1";
+                    </script>
+                    <script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block dash_scripts %}
+    {% endblock %}
+{% endblock %}

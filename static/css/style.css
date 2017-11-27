@@ -140,7 +140,7 @@ body {
 
 #feedback_table{
     color: white !important;
-    background-color: #704C5E !important;
+    background-color: #A37F91; !important;
 }
 
 #feedback_table thead tr th{
@@ -225,6 +225,7 @@ body {
 #character_adv_table {
     color: #5B5B5B !important;
     display: table !important;
+    margin-top: 20px;
 }
 
 #character_adv_table thead tr th {
@@ -246,13 +247,19 @@ body {
 }
 
 #character_advancement {
+    margin-top: 20px;
     min-width: 1000px !important;
     margin-right: 30px !important;
+}
+
+#exp_awards {
+    margin-top: 20px;
 }
 
 #exp_awards_table {
     color: #5B5B5B !important;
     display: table !important;
+    margin-top: 20px;
 }
 
 #exp_awards_table thead tr th {
@@ -292,7 +299,40 @@ body {
     margin-top: 15%;
 }
 
-/*#logged_out_home_buttons {*/
-    /*margin: 0 auto;*/
-    /*max-width: 600px;*/
-/*}*/
+#dashboard {
+    color: #5B5B5B !important;
+    margin: 20px auto 40px;
+    max-width: 1700px;
+}
+
+#amazon_script {
+    margin-top: 80px;
+    max-height: 500px;
+}
+
+#amzn-native-ad-0 {
+    margin: 0 auto !important;
+}
+
+.amzn-native-header-text {
+    color: #5B5B5B !important;
+    font-family: Amarante !important;
+    font-size: 30px !important;
+}
+
+.amzn-native-header {
+    text-align: center !important;
+}
+
+#management_buttons {
+    margin-top: 40px;
+}
+
+#stats_cards1 {
+    margin-top: 80px;
+}
+
+#stats_cards2 {
+    margin-top: 20px;
+}
+

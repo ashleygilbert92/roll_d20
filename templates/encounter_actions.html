@@ -15,7 +15,7 @@
                     <table class="table table-success table-responsive rounded" id="encounter_action_table">
                         <thead>
                             <tr>
-                                <th>Player</th>
+                                <th>Character</th>
                                 <th>Damage Taken</th>
                                 <th>Damage Done</th>
 {#                                <th>Spells Cast</th>#}
@@ -59,7 +59,7 @@
                     <table class="table table-success table-responsive rounded" id="encounter_totals_table">
                         <thead>
                             <tr>
-                                <th>Player</th>
+                                <th>Character</th>
                                 <th>Damage Taken</th>
                                 <th>Damage Done</th>
 {#                                <th>Spells Cast</th>#}
@@ -117,7 +117,7 @@
                         <form id="add_encounter_form">
                             <div class="modal-body">
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-4" for="player">Player:</label>
+                                    <label class="control-label col-sm-4" for="player">Character:</label>
                                     <div class="col-sm-8">
                                         <select class="form-control" name="player" id="player" required>
                                             {% for player in players %}
@@ -173,7 +173,7 @@
                         <form id="edit_encounter_form">
                             <div class="modal-body">
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-4" for="player2">Player:</label>
+                                    <label class="control-label col-sm-4" for="player2">Character:</label>
                                     <div class="col-sm-8">
                                         <select class="form-control" name="player2" id="player2" required>
                                             {% for player in players %}

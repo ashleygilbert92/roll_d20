@@ -73,6 +73,7 @@
                 <li>@2017 Ashley Gilbert</li>
                 <li><a href="/">Home</a></li>
                 {% if current_user.is_authenticated %}
+                    <li><a href="/camapaigns/">Campaign Management</a></li>
                     <li><a href="/player_feedback/">Player Feedback</a></li>
                 {% else %}
                     <li><a href="/player_feedback/">Give Campaign Feedback</a></li>
